@@ -1,18 +1,9 @@
-## Live Demo
-
-(https://careermate-ai.onrender.com)
-
-
-
-
-\# CareerMate AI
-
-
+# CareerMate AI
 
 CareerMate AI is a Flask-based AI career guidance chatbot for students.
 
-
-
+## Live Demo
+(https://careermate-ai.onrender.com)
 \## Features
 
 
