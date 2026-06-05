@@ -1,0 +1,6 @@
+Flask
+python-dotenv
+google-genai
+Werkzeug
+PyPDF2
+gunicorn

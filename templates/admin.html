@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | CareerMate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('chat') }}">AI Chat</a>
+        <a href="{{ url_for('history') }}">History</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <main class="main-content">
+        <section class="hero-card">
+            <div>
+                <span class="badge">Admin Dashboard</span>
+                <h1>System Analytics</h1>
+                <p>Monitor users, chats, tool usage, and uploaded resumes.</p>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card"><h2>{{ stats.total_users }}</h2><p>Total Users</p></div>
+            <div class="stat-card"><h2>{{ stats.total_chats }}</h2><p>Total Chats</p></div>
+            <div class="stat-card"><h2>{{ stats.total_tools }}</h2><p>Tool Results</p></div>
+            <div class="stat-card"><h2>{{ stats.total_resumes }}</h2><p>Uploaded Resumes</p></div>
+        </section>
+
+        <section class="panel">
+            <div class="result-actions">
+                <h2>All Chat History</h2>
+                <form method="POST" action="{{ url_for('admin_clear_all') }}">
+                    <button class="danger-btn" type="submit">Clear All Chats</button>
+                </form>
+            </div>
+
+            <form method="GET" class="search-form">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Search all chats...">
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        {% if chats %}
+            {% for chat in chats %}
+            <section class="panel">
+                <p><strong>Name:</strong> {{ chat[1] }}</p>
+                <p><strong>Email:</strong> {{ chat[2] }}</p>
+                <p><strong>User:</strong> {{ chat[3] }}</p>
+                <p><strong>Bot:</strong> {{ chat[4] }}</p>
+                <small>{{ chat[5] }}</small>
+
+                <form method="POST" action="{{ url_for('delete_chat', chat_id=chat[0]) }}">
+                    <input type="hidden" name="source" value="admin">
+                    <button class="danger-small" type="submit">Delete</button>
+                </form>
+            </section>
+            {% endfor %}
+        {% else %}
+            <section class="panel"><p class="muted">No chats found.</p></section>
+        {% endif %}
+    </main>
+
+</div>
+
+</body>
+</html>
