@@ -1,158 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>AI Chat | CareerMate AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-
-<div class="app-layout">
-
-    <aside class="sidebar">
-        <h2>CareerMate AI</h2>
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('chat') }}">AI Chat</a>
-        <a href="{{ url_for('resume_analyzer') }}">Resume Analyzer</a>
-        <a href="{{ url_for('roadmap') }}">Roadmap</a>
-        <a href="{{ url_for('interview') }}">Interview</a>
-        <a href="{{ url_for('history') }}">History</a>
-        <a href="{{ url_for('profile') }}">Profile</a>
-        {% if is_admin %}
-        <a href="{{ url_for('admin') }}">Admin</a>
-        {% endif %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </aside>
-
-    <main class="main-content">
-        <section class="chat-shell">
-            <div class="chat-header">
-                <div>
-                    <h1>CareerMate AI Chat</h1>
-                    <p>Ask anything about career, internships, projects, interviews, and coding.</p>
-                </div>
-                <span class="online-badge">Online</span>
-            </div>
-
-            <div class="chat-box" id="chat-box">
-                <div class="message bot-message">
-                    <div class="message-content">
-                        Hello {{ user_name }}! Ask me about internships, resume, skills, projects, interviews, or programming doubts.
-                    </div>
-                </div>
-            </div>
-
-            <div class="quick-prompts">
-                <button onclick="usePrompt('Suggest a roadmap to become an AI engineer')">AI Roadmap</button>
-                <button onclick="usePrompt('Improve my resume for internship')">Resume Tips</button>
-                <button onclick="usePrompt('Give me Python interview questions')">Interview</button>
-                <button onclick="usePrompt('Suggest beginner AI ML projects for GitHub')">Projects</button>
-            </div>
-
-            <div class="chat-input-area">
-                <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
-                <button onclick="sendMessage()" id="send-btn">Send</button>
-            </div>
-        </section>
-    </main>
-
-</div>
-
-<script>
-    const input = document.getElementById("user-input");
-    const chatBox = document.getElementById("chat-box");
-
-    input.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            sendMessage();
-        }
-    });
-
-    function usePrompt(promptText) {
-        input.value = promptText;
-        sendMessage();
-    }
-
-    function addMessage(message, sender) {
-        const messageDiv = document.createElement("div");
-        messageDiv.className = sender === "user" ? "message user-message" : "message bot-message";
-
-        const contentDiv = document.createElement("div");
-        contentDiv.className = "message-content";
-        contentDiv.innerText = message;
-
-        messageDiv.appendChild(contentDiv);
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function showTyping() {
-        const typingDiv = document.createElement("div");
-        typingDiv.className = "message bot-message";
-        typingDiv.id = "typing";
-
-        const contentDiv = document.createElement("div");
-        contentDiv.className = "message-content typing";
-        contentDiv.innerText = "CareerMate AI is thinking...";
-
-        typingDiv.appendChild(contentDiv);
-        chatBox.appendChild(typingDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function removeTyping() {
-        const typing = document.getElementById("typing");
-        if (typing) typing.remove();
-    }
-
-    function setLoading(value) {
-        const btn = document.getElementById("send-btn");
-        btn.disabled = value;
-        btn.innerText = value ? "Wait..." : "Send";
-    }
-
-    async function sendMessage() {
-        const message = input.value.trim();
-        if (message === "") return;
-
-        addMessage(message, "user");
-        input.value = "";
-
-        showTyping();
-        setLoading(true);
-
-        try {
-            const response = await fetch("/get", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({message: message})
-            });
-
-            const data = await response.json();
-
-            removeTyping();
-            setLoading(false);
-
-            addMessage(data.response || "Sorry, no response received.", "bot");
-
-        } catch (error) {
-            removeTyping();
-            setLoading(false);
-            addMessage("Server error. Please check Flask terminal.", "bot");
-        }
-    }
-</script>
-
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareerMate AI | Dashboard</title>
+    <title>CareerMate AI | Chat</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -163,80 +14,51 @@
         <h2 class="logo">CareerMate AI</h2>
         <p class="sidebar-subtitle">AI Career Preparation Platform</p>
 
-        <a href="/" class="active">Dashboard</a>
-        <a href="/history">Chat History</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/chat" class="active">AI Chat</a>
+        <a href="/resume-analyzer">Resume Analyzer</a>
+        <a href="/roadmap">Roadmap</a>
+        <a href="/interview">Interview</a>
+        <a href="/history">History</a>
+        <a href="/profile">Profile</a>
+
+        {% if is_admin %}
         <a href="/admin">Admin</a>
+        {% endif %}
+
         <a href="/logout">Logout</a>
     </aside>
 
     <main class="main-content">
 
-        <section class="page-header">
-            <h1>CareerMate AI</h1>
-            <p>Your AI assistant for career guidance, resume improvement, skill roadmaps, internship preparation, and interview practice.</p>
-        </section>
+        <section class="chat-page-box">
 
-        <section class="feature-grid">
-
-            <div class="feature-card">
-                <h3>Career Guidance</h3>
-                <p>Ask career doubts and get clear guidance based on your skills, goals, and interests.</p>
-            </div>
-
-            <div class="feature-card">
-                <h3>Resume Improvement</h3>
-                <p>Improve your resume points, project descriptions, and internship profile.</p>
-            </div>
-
-            <div class="feature-card">
-                <h3>Interview Practice</h3>
-                <p>Prepare answers for HR, technical, internship, and project-based interview questions.</p>
-            </div>
-
-        </section>
-
-        <section class="grid-2">
-
-            <div class="chat-box">
-                <h2>Ask CareerMate AI</h2>
-
-                <div class="chat-messages">
-
-                    {% if user_input %}
-                    <div class="user-message">
-                        {{ user_input }}
-                    </div>
-                    {% endif %}
-
-                    {% if response %}
-                    <div class="bot-message">
-                        {{ response }}
-                    </div>
-                    {% endif %}
-
+            <div class="chat-header">
+                <div>
+                    <h1>CareerMate AI Chat</h1>
+                    <p>Ask anything about career, internships, projects, interviews, and coding.</p>
                 </div>
 
-                <form method="POST" class="chat-input-area">
-                    <textarea name="user_input" placeholder="Ask about career, resume, roadmap, interview, internship, or programming..." required></textarea>
-                    <button type="submit">Ask AI</button>
-                </form>
+                <span class="online-badge">Online</span>
             </div>
 
-            <div class="card">
-                <h2>Best Prompts</h2>
-
-                <p><span class="badge">Resume</span></p>
-                <p>Improve my resume for a Python internship.</p>
-
-                <p><span class="badge">Roadmap</span></p>
-                <p>Create a 30-day roadmap to learn Flask and build projects.</p>
-
-                <p><span class="badge">Interview</span></p>
-                <p>Ask me 10 internship interview questions with answers.</p>
-
-                <p><span class="badge">Career</span></p>
-                <p>Which AI/ML skills should I learn for high-paying jobs?</p>
+            <div class="chat-window" id="chatMessages">
+                <div class="bot-message">
+                    Hello {{ user_name if user_name else "student" }}! Ask me about internships, resume, skills, projects, interviews, or programming doubts.
+                </div>
             </div>
+
+            <div class="quick-actions">
+                <button type="button" onclick="sendQuickPrompt('Suggest a roadmap to become an AI engineer')">AI Roadmap</button>
+                <button type="button" onclick="sendQuickPrompt('Give me resume tips for a Python internship')">Resume Tips</button>
+                <button type="button" onclick="sendQuickPrompt('Ask me interview questions for internship preparation')">Interview</button>
+                <button type="button" onclick="sendQuickPrompt('Suggest beginner friendly AI ML projects')">Projects</button>
+            </div>
+
+            <form id="chatForm" class="chat-input-area">
+                <textarea id="userInput" placeholder="Type your message here..." required></textarea>
+                <button type="submit" id="sendBtn">Send</button>
+            </form>
 
         </section>
 
@@ -244,6 +66,63 @@
 
 </div>
 
+<script>
+    const chatForm = document.getElementById("chatForm");
+    const userInput = document.getElementById("userInput");
+    const chatMessages = document.getElementById("chatMessages");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function addMessage(text, className) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = className;
+        messageDiv.innerText = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage(message) {
+        if (message.trim() === "") {
+            return;
+        }
+
+        addMessage(message, "user-message");
+
+        sendBtn.disabled = true;
+        sendBtn.innerText = "Thinking...";
+
+        try {
+            const response = await fetch("/get", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            addMessage(data.response, "bot-message");
+
+        } catch (error) {
+            addMessage("Something went wrong. Please try again.", "bot-message");
+        }
+
+        sendBtn.disabled = false;
+        sendBtn.innerText = "Send";
+    }
+
+    chatForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const message = userInput.value.trim();
+        userInput.value = "";
+
+        sendMessage(message);
+    });
+
+    function sendQuickPrompt(promptText) {
+        sendMessage(promptText);
+    }
+</script>
+
 </body>
 </html>
-
