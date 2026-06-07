@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Admin | CareerMate AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -66,6 +67,124 @@
         {% else %}
             <section class="panel"><p class="muted">No chats found.</p></section>
         {% endif %}
+    </main>
+
+</div>
+
+</body>
+</html>
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerMate AI | Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2 class="logo">CareerMate AI</h2>
+        <p class="sidebar-subtitle">Admin Panel</p>
+
+        <a href="/">Dashboard</a>
+        <a href="/history">Chat History</a>
+        <a href="/admin" class="active">Admin</a>
+        <a href="/logout">Logout</a>
+    </aside>
+
+    <main class="main-content">
+
+        <section class="page-header">
+            <h1>Admin Dashboard</h1>
+            <p>Monitor CareerMate AI user activity, chat history, and unknown questions.</p>
+        </section>
+
+        <section class="dashboard-grid">
+
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <p>{{ total_users if total_users else 0 }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Chats</h3>
+                <p>{{ total_chats if total_chats else 0 }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Unknown Questions</h3>
+                <p>{{ total_unknown if total_unknown else 0 }}</p>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <h2>Recent Chat History</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Question</th>
+                            <th>AI Response</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% if chats %}
+                            {% for chat in chats %}
+                            <tr>
+                                <td>{{ chat[1] }}</td>
+                                <td>{{ chat[2] }}</td>
+                                <td>{{ chat[3] }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="3">No chat history found.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <br>
+
+        <section class="card">
+            <h2>Unknown Questions</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% if unknown_questions %}
+                            {% for q in unknown_questions %}
+                            <tr>
+                                <td>{{ q[1] }}</td>
+                                <td>{{ q[2] }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="2">No unknown questions found.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
 </div>
