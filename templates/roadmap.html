@@ -1,83 +1,450 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>Roadmap Generator | CareerMate AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Skill Roadmap Generator | CareerMate AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #e2e2e8;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-panel-elevated {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 64px rgba(0, 209, 255, 0.08);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00d1ff 0%, #00677f 100%);
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+        .timeline-line {
+            background: linear-gradient(to bottom, transparent, #00d1ff, #dcb8ff, #00f9be, transparent);
+        }
+        .node-glow {
+            box-shadow: 0 0 20px rgba(0, 209, 255, 0.4);
+        }
+        .node-active {
+            border: 2px solid #00d1ff;
+            background: rgba(0, 209, 255, 0.1);
+        }
+        .scanning-progress {
+            background: linear-gradient(90deg, transparent 0%, rgba(0, 209, 255, 0.4) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: scan 2s infinite linear;
+        }
+        @keyframes scan {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#111318",
+                      "on-primary-container": "#00566a",
+                      "on-surface": "#e2e2e8",
+                      "on-surface-variant": "#bbc9cf",
+                      "inverse-primary": "#00677f",
+                      "on-error": "#690005",
+                      "inverse-on-surface": "#2f3035",
+                      "surface-container-high": "#282a2e",
+                      "background": "#111318",
+                      "secondary-fixed": "#efdbff",
+                      "outline": "#859399",
+                      "inverse-surface": "#e2e2e8",
+                      "secondary-fixed-dim": "#dcb8ff",
+                      "surface-container": "#1e2024",
+                      "on-background": "#e2e2e8",
+                      "on-secondary-fixed-variant": "#6700b5",
+                      "surface-variant": "#333539",
+                      "primary-fixed": "#b7eaff",
+                      "on-tertiary-fixed": "#002116",
+                      "secondary-container": "#7701d0",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#005a42",
+                      "on-secondary-container": "#dcb7ff",
+                      "on-tertiary": "#003828",
+                      "surface-bright": "#37393e",
+                      "outline-variant": "#3c494e",
+                      "secondary": "#dcb8ff",
+                      "primary": "#a4e6ff",
+                      "tertiary-container": "#00daa5",
+                      "surface-container-lowest": "#0c0e12",
+                      "tertiary": "#00f9be",
+                      "on-error-container": "#ffdad6",
+                      "on-primary": "#003543",
+                      "tertiary-fixed-dim": "#00e1ab",
+                      "on-tertiary-fixed-variant": "#00513c",
+                      "surface-container-low": "#1a1c20",
+                      "surface-dim": "#111318",
+                      "on-primary-fixed-variant": "#004e60",
+                      "tertiary-fixed": "#36ffc4",
+                      "primary-container": "#00d1ff",
+                      "on-secondary": "#480081",
+                      "surface-container-highest": "#333539",
+                      "surface-tint": "#4cd6ff",
+                      "on-primary-fixed": "#001f28",
+                      "on-secondary-fixed": "#2c0051",
+                      "error-container": "#93000a",
+                      "primary-fixed-dim": "#4cd6ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "20px",
+                      "container-max": "1280px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
 </head>
-<body>
-
-<div class="app-layout">
-
-    <aside class="sidebar">
-        <h2>CareerMate AI</h2>
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('chat') }}">AI Chat</a>
-        <a href="{{ url_for('resume_analyzer') }}">Resume Analyzer</a>
-        <a href="{{ url_for('roadmap') }}">Roadmap</a>
-        <a href="{{ url_for('interview') }}">Interview</a>
-        <a href="{{ url_for('history') }}">History</a>
-        <a href="{{ url_for('profile') }}">Profile</a>
-        {% if is_admin %}
-        <a href="{{ url_for('admin') }}">Admin</a>
-        {% endif %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </aside>
-
-    <main class="main-content">
-        <section class="panel">
-            <h1>Roadmap Generator</h1>
-            <p class="muted">Create a practical roadmap for your target role.</p>
-
-            <form method="POST" class="tool-form">
-                <input type="text" name="goal" placeholder="Goal: AI ML Internship" required>
-                <input type="text" name="duration" placeholder="Duration: 3 months" required>
-                <input type="text" name="current_level" placeholder="Current level: Python basics completed" required>
-                <button type="submit">Generate Roadmap</button>
-            </form>
-        </section>
-
-        {% if result %}
-        <section class="panel">
-            <div class="result-actions">
-                <h2>Your Roadmap</h2>
-                <div>
-                    <button onclick="copyResult()">Copy</button>
-                    {% if result_id %}
-                    <a class="small-btn" href="{{ url_for('download_result', result_id=result_id) }}">Download</a>
-                    {% endif %}
-                </div>
-            </div>
-            <pre id="ai-result">{{ result }}</pre>
-        </section>
-        {% endif %}
-
-        <section class="panel">
-            <h2>Roadmap History</h2>
-            {% if history %}
-                {% for item in history %}
-                <div class="mini-item">
-                    <p>{{ item[2][:120] }}...</p>
-                    <small>{{ item[5] }}</small>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p class="muted">No roadmap history yet.</p>
-            {% endif %}
-        </section>
-    </main>
-
+<body class="bg-surface text-on-surface">
+<!-- Backdrop Animation -->
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar (Desktop) -->
+<aside class="h-screen w-64 hidden md:flex flex-col border-r border-white/10 bg-opacity-30 backdrop-blur-xl bg-surface-container-lowest z-40">
+<div class="flex flex-col h-full py-6">
+<div class="px-6 mb-10">
+<h1 class="font-display-lg text-[24px] font-bold text-primary tracking-tighter">CareerMate AI</h1>
+<p class="font-body-md text-on-surface-variant text-xs">AI Mentor Active</p>
 </div>
-
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center px-3 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200" href="/dashboard">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center px-3 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200" href="/chat">
+<span class="material-symbols-outlined mr-3">smart_toy</span>
+<span class="font-body-md">AI Chat</span>
+</a>
+<a class="flex items-center px-3 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200" href="/resume">
+<span class="material-symbols-outlined mr-3">description</span>
+<span class="font-body-md">Resume Analyzer</span>
+</a>
+<!-- Active: Roadmap -->
+<a class="flex items-center px-3 py-3 rounded-lg text-primary font-bold border-l-4 border-primary bg-white/5 transition-all duration-200" href="/roadmap">
+<span class="material-symbols-outlined mr-3">map</span>
+<span class="font-body-md">Roadmap</span>
+</a>
+<a class="flex items-center px-3 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200" href="/interview">
+<span class="material-symbols-outlined mr-3">mic</span>
+<span class="font-body-md">Interview Practice</span>
+</a>
+</nav>
+<div class="mt-auto px-6 pt-6 border-t border-white/5">
+<div class="flex items-center space-x-3 mb-6">
+<img alt="User Profile Avatar" class="w-10 h-10 rounded-full border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeDIqDRVR_t_FsmhgLuThMUffgEetB6GgvbesVfzEoe653mHRR3A4XXzd96ErEKNViZs-LOOez8sOjAvkOCvKVEIYhGubt-gjAO1QCN-AN_L8-8dsmr7aqvBhpuV29_RVJlTJ2wCvdSmABvCz_q8GLsLz4UsuQ3DZqZ3QU-wmQ48dqFpPj2DzwjFjknlFzAtPWrMqXkYCXaDHnAQpoxwOC2qbUMVmDDkkvu1fWeiZ68zIplk144_uT"/>
+<div class="overflow-hidden">
+<p class="font-body-md text-sm font-bold truncate">Alex Chen</p>
+<p class="text-xs text-on-surface-variant">Pro Plan</p>
+</div>
+</div>
+<a class="flex items-center text-on-surface-variant hover:text-on-surface transition-colors" href="/logout">
+<span class="material-symbols-outlined mr-3">logout</span>
+<span class="font-body-md">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto relative">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-30 w-full h-16 flex items-center px-margin-mobile md:px-margin-desktop bg-opacity-20 backdrop-blur-md bg-surface-container border-b border-white/5 justify-between">
+<div class="flex items-center">
+<button class="md:hidden mr-4">
+<span class="material-symbols-outlined text-on-surface">menu</span>
+</button>
+<div class="hidden md:flex items-center bg-black/40 rounded-full px-4 py-1.5 border border-white/10 w-96">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface w-full p-0" placeholder="Search skills, roadmaps..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="hover:bg-white/5 rounded-full p-2 transition-colors relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="hover:bg-white/5 rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+</div>
+</header>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-10">
+<!-- Hero Section -->
+<div class="mb-12">
+<h2 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-4 bg-gradient-to-r from-primary to-tertiary bg-clip-text text-transparent">Architect Your Career.</h2>
+<p class="font-body-lg text-on-surface-variant max-w-2xl">Enter your professional goals and let our AI engine generate a surgical precision roadmap to take you from wherever you are to where you need to be.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left: Input Form -->
+<div class="lg:col-span-4 space-y-6">
+<section class="glass-panel-elevated p-8 rounded-[24px]">
+<h3 class="font-headline-md text-headline-md mb-6 flex items-center">
+<span class="material-symbols-outlined mr-2 text-primary">auto_fix_high</span>
+                                Generator
+                            </h3>
+<form class="space-y-5">
+<div>
+<label class="block text-xs font-label-caps text-on-surface-variant mb-2">Career Goal</label>
+<input class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface transition-all" placeholder="e.g. Master Cloud Architecture" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-label-caps text-on-surface-variant mb-2">Target Role</label>
+<input class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface transition-all" placeholder="e.g. Senior DevOps Engineer" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-label-caps text-on-surface-variant mb-2">Skill Level</label>
+<select class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface appearance-none">
+<option>Beginner</option>
+<option>Intermediate</option>
+<option>Advanced</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-label-caps text-on-surface-variant mb-2">Timeframe</label>
+<select class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface appearance-none">
+<option>3 Months</option>
+<option>6 Months</option>
+<option>12 Months</option>
+</select>
+</div>
+</div>
+<button class="btn-primary w-full py-4 rounded-xl font-bold text-on-primary flex items-center justify-center space-x-2 mt-4" type="button">
+<span>Generate Roadmap</span>
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</button>
+</form>
+</section>
+<!-- AI Insight Card -->
+<div class="glass-panel p-6 rounded-[24px] relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-16 h-16 bg-secondary/10 blur-2xl group-hover:bg-secondary/20 transition-all"></div>
+<div class="relative z-10">
+<div class="flex items-center space-x-2 text-secondary mb-3">
+<span class="material-symbols-outlined text-[20px]">psychology</span>
+<span class="text-xs font-label-caps">AI INSIGHT</span>
+</div>
+<p class="text-sm font-body-md text-on-surface-variant italic">"Users targeting Cloud Architecture roles typically see a 40% increase in interview requests after completing the 'Advanced' module of this roadmap."</p>
+</div>
+</div>
+</div>
+<!-- Right: Visual Roadmap -->
+<div class="lg:col-span-8">
+<div class="glass-panel p-8 md:p-12 rounded-[24px] relative">
+<div class="flex items-center justify-between mb-12">
+<div>
+<h3 class="font-headline-md text-headline-md">Your Path to Mastery</h3>
+<p class="text-sm text-on-surface-variant">Personalized AI Roadmap for Senior DevOps</p>
+</div>
+<div class="flex space-x-2">
+<button class="p-2 hover:bg-white/5 rounded-full border border-white/5 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">download</span>
+</button>
+<button class="p-2 hover:bg-white/5 rounded-full border border-white/5 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">share</span>
+</button>
+</div>
+</div>
+<!-- Interactive Timeline Area -->
+<div class="relative pl-12 md:pl-24">
+<!-- Main Timeline Axis -->
+<div class="absolute left-[23px] md:left-[35px] top-0 bottom-0 w-[2px] timeline-line opacity-50"></div>
+<!-- Stage: Beginner -->
+<div class="relative mb-16 group">
+<div class="absolute -left-[53px] md:-left-[65px] top-0 w-10 h-10 rounded-full flex items-center justify-center bg-surface border-2 border-primary node-glow z-10 group-hover:scale-110 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-primary text-[20px]">school</span>
+</div>
+<div class="glass-panel p-6 rounded-2xl border-l-4 border-l-primary group-hover:bg-white/5 transition-all">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-lg text-primary">Beginner: Foundation</h4>
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-label-caps">WEEK 1-4</span>
+</div>
+<p class="text-sm text-on-surface-variant mb-4">Mastering the fundamentals of Linux, networking basics, and Bash scripting.</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 rounded bg-white/5 text-[11px] border border-white/10">Linux Shell</span>
+<span class="px-2 py-1 rounded bg-white/5 text-[11px] border border-white/10">HTTP/DNS</span>
+<span class="px-2 py-1 rounded bg-white/5 text-[11px] border border-white/10">Git Basics</span>
+</div>
+</div>
+</div>
+<!-- Stage: Core Skills (Active State) -->
+<div class="relative mb-16 group">
+<div class="absolute -left-[53px] md:-left-[65px] top-0 w-10 h-10 rounded-full flex items-center justify-center bg-surface border-2 border-primary node-glow z-10 scale-125 transition-transform cursor-pointer shadow-[0_0_30px_#00d1ff44]">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div class="glass-panel-elevated p-6 rounded-2xl border-l-4 border-l-primary transition-all relative overflow-hidden">
+<div class="scanning-progress absolute bottom-0 left-0 w-full h-[2px]"></div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-lg text-primary">Core Skills: Infrastructure</h4>
+<span class="px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-label-caps">IN PROGRESS</span>
+</div>
+<p class="text-sm text-on-surface-variant mb-4">Implementing Infrastructure as Code (IaC) and containerization strategies.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div class="p-3 bg-black/40 rounded-xl border border-white/10 flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">cloud</span>
+</div>
+<div>
+<p class="text-xs font-bold">AWS Certified</p>
+<p class="text-[10px] text-on-surface-variant">3 modules left</p>
+</div>
+</div>
+<div class="p-3 bg-black/40 rounded-xl border border-white/10 flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm">token</span>
+</div>
+<div>
+<p class="text-xs font-bold">Terraform Basics</p>
+<p class="text-[10px] text-on-surface-variant">Completed</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Stage: Projects -->
+<div class="relative mb-16 group">
+<div class="absolute -left-[53px] md:-left-[65px] top-0 w-10 h-10 rounded-full flex items-center justify-center bg-surface border-2 border-secondary z-10 group-hover:scale-110 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-secondary text-[20px]">architecture</span>
+</div>
+<div class="glass-panel p-6 rounded-2xl border-l-4 border-l-secondary group-hover:bg-white/5 transition-all">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-lg text-secondary">Projects: Real-World Ops</h4>
+<span class="px-3 py-1 rounded-full bg-secondary/10 text-secondary text-[10px] font-label-caps">WEEK 12-20</span>
+</div>
+<p class="text-sm text-on-surface-variant mb-4">Building end-to-end CI/CD pipelines and monitoring dashboards for high-traffic apps.</p>
+<div class="relative w-full h-32 rounded-xl overflow-hidden mb-4">
+<img alt="Project Dashboard visualization" class="w-full h-full object-cover" data-alt="A futuristic dark-themed monitoring dashboard for a cloud infrastructure project, featuring vibrant neon blue and purple data visualizations, glowing line graphs, and glassmorphic UI elements against a deep charcoal background. The atmosphere is professional and technically sophisticated, with a sense of real-time activity and precision engineering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATBVkLPis0k4scfJQFlpPSMT52cXK3egLVLwEdU7qLmEQ5e_NoPAAi4K2RLdaRdD4QxWS2yiLYYXJx89EblV8h9NZXr4-PC_Dmem_HquI0tVNJshKP5MKrkU6bD45WCd8EM-BB_l0miALqV5hDy6-qDDQHzEUY2Df4SsvJkhaUsHYjW0sROlqvwN5OVauc-8fi_p_cBPZJVne2ATmqRbAfTtoOztOqF2lcJA-1nKXR-VWUCfae2Os1"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
+<p class="text-xs font-bold text-white">Capstone: Multi-Region Cluster</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Stage: Internship Ready -->
+<div class="relative mb-16 group">
+<div class="absolute -left-[53px] md:-left-[65px] top-0 w-10 h-10 rounded-full flex items-center justify-center bg-surface border-2 border-tertiary z-10 group-hover:scale-110 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-tertiary text-[20px]">work</span>
+</div>
+<div class="glass-panel p-6 rounded-2xl border-l-4 border-l-tertiary group-hover:bg-white/5 transition-all">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-lg text-tertiary">Internship Ready</h4>
+<span class="px-3 py-1 rounded-full bg-tertiary/10 text-tertiary text-[10px] font-label-caps">MILESTONE</span>
+</div>
+<p class="text-sm text-on-surface-variant">Mock interviews, technical assessments, and resume optimization with AI.</p>
+</div>
+</div>
+<!-- Stage: Advanced -->
+<div class="relative group opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
+<div class="absolute -left-[53px] md:-left-[65px] top-0 w-10 h-10 rounded-full flex items-center justify-center bg-surface border-2 border-outline z-10 transition-transform cursor-pointer">
+<span class="material-symbols-outlined text-outline text-[20px]">military_tech</span>
+</div>
+<div class="glass-panel p-6 rounded-2xl border-l-4 border-l-outline">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-lg text-on-surface-variant">Advanced: Scalability</h4>
+<span class="px-3 py-1 rounded-full bg-white/10 text-on-surface-variant text-[10px] font-label-caps">POST-PLACEMENT</span>
+</div>
+<p class="text-sm text-on-surface-variant">Kubernetes operator patterns, chaos engineering, and cost optimization.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 bg-opacity-40 backdrop-blur-2xl bg-surface-container-highest border-t border-white/20 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="/">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-[10px] mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="/chat">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-caps text-[10px] mt-1">AI Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="/dashboard">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-caps text-[10px] mt-1">Tools</span>
+</a>
+<!-- Active -->
+<a class="flex flex-col items-center justify-center text-primary" href="/roadmap">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps text-[10px] mt-1">Roadmap</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="/profile">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-caps text-[10px] mt-1">Profile</span>
+</a>
+</nav>
 <script>
-function copyResult() {
-    const text = document.getElementById("ai-result").innerText;
-    navigator.clipboard.writeText(text);
-    alert("Result copied!");
-}
-</script>
+        // Micro-interactions for the generator form
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('focus', () => {
+                element.parentElement.querySelector('label').style.color = '#00d1ff';
+            });
+            element.addEventListener('blur', () => {
+                element.parentElement.querySelector('label').style.color = '#bbc9cf';
+            });
+        });
 
-</body>
-</html>
-
+        // Simple button click effect
+        const genBtn = document.querySelector('.btn-primary');
+        if (genBtn) {
+            genBtn.addEventListener('click', () => {
+                genBtn.innerHTML = '<span>Processing Architecture...</span><span class="material-symbols-outlined animate-spin text-[20px]">sync</span>';
+                setTimeout(() => {
+                    genBtn.innerHTML = '<span>Roadmap Refined</span><span class="material-symbols-outlined text-[20px]">check_circle</span>';
+                }, 2000);
+            });
+        }
+    </script>
+</body></html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareerMate AI | Premium Mentorship</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #050505;
+            color: #e2e2e8;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-active {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 209, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 209, 255, 0.05);
+        }
+        .chat-bubble-ai {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+        .chat-bubble-user {
+            background: linear-gradient(135deg, #00566a 0%, #00d1ff 100%);
+            border-bottom-right-radius: 4px;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .glow-accent {
+            box-shadow: inset 0 0 12px rgba(76, 214, 255, 0.2);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#111318",
+                      "on-primary-container": "#00566a",
+                      "on-surface": "#e2e2e8",
+                      "on-surface-variant": "#bbc9cf",
+                      "inverse-primary": "#00677f",
+                      "on-error": "#690005",
+                      "inverse-on-surface": "#2f3035",
+                      "surface-container-high": "#282a2e",
+                      "background": "#111318",
+                      "secondary-fixed": "#efdbff",
+                      "outline": "#859399",
+                      "inverse-surface": "#e2e2e8",
+                      "secondary-fixed-dim": "#dcb8ff",
+                      "surface-container": "#1e2024",
+                      "on-background": "#e2e2e8",
+                      "on-secondary-fixed-variant": "#6700b5",
+                      "surface-variant": "#333539",
+                      "primary-fixed": "#b7eaff",
+                      "on-tertiary-fixed": "#002116",
+                      "secondary-container": "#7701d0",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#005a42",
+                      "on-secondary-container": "#dcb7ff",
+                      "on-tertiary": "#003828",
+                      "surface-bright": "#37393e",
+                      "outline-variant": "#3c494e",
+                      "secondary": "#dcb8ff",
+                      "primary": "#a4e6ff",
+                      "tertiary-container": "#00daa5",
+                      "surface-container-lowest": "#0c0e12",
+                      "tertiary": "#00f9be",
+                      "on-error-container": "#ffdad6",
+                      "on-primary": "#003543",
+                      "tertiary-fixed-dim": "#00e1ab",
+                      "on-tertiary-fixed-variant": "#00513c",
+                      "surface-container-low": "#1a1c20",
+                      "surface-dim": "#111318",
+                      "on-primary-fixed-variant": "#004e60",
+                      "tertiary-fixed": "#36ffc4",
+                      "primary-container": "#00d1ff",
+                      "on-secondary": "#480081",
+                      "surface-container-highest": "#333539",
+                      "surface-tint": "#4cd6ff",
+                      "on-primary-fixed": "#001f28",
+                      "on-secondary-fixed": "#2c0051",
+                      "error-container": "#93000a",
+                      "primary-fixed-dim": "#4cd6ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "20px",
+                      "container-max": "1280px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- Global Animated Background -->
+<!-- SideNavBar (Desktop Only) -->
+<aside class="h-screen w-64 hidden md:flex flex-col border-r border-white/10 bg-opacity-30 backdrop-blur-xl bg-surface-container-lowest shadow-[0_0_20px_rgba(0,209,255,0.05)] py-6 z-40">
+<div class="px-6 mb-8">
+<h1 class="font-display-lg text-[28px] font-bold text-primary tracking-tight">CareerMate AI</h1>
+<p class="font-body-md text-xs text-on-surface-variant opacity-60">AI Mentor Active</p>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center px-3 py-3 text-primary font-bold border-l-4 border-primary bg-white/5 transition-all duration-200" href="/chat">
+<span class="material-symbols-outlined mr-3" data-icon="smart_toy">smart_toy</span>
+<span class="font-body-md text-body-md">AI Chat</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg group" href="/resume">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform" data-icon="description">description</span>
+<span class="font-body-md text-body-md">Resume Analyzer</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg group" href="/roadmap">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform" data-icon="map">map</span>
+<span class="font-body-md text-body-md">Roadmap</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg group" href="/interview">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform" data-icon="mic">mic</span>
+<span class="font-body-md text-body-md">Interview Practice</span>
+</a>
+<a class="flex items-center px-3 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg group" href="/projects">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform" data-icon="assignment">assignment</span>
+<span class="font-body-md text-body-md">Projects</span>
+</a>
+</nav>
+<div class="px-3 mt-auto space-y-1">
+<div class="p-4 mb-4 glass-card rounded-xl border-primary/20 bg-primary/5">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Premium Status</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="verified">verified</span>
+</div>
+<div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary shimmer w-3/4"></div>
+</div>
+<p class="text-[10px] mt-2 text-on-surface-variant">75% Usage remaining</p>
+</div>
+<a class="flex items-center px-3 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-lg" href="/profile">
+<span class="material-symbols-outlined mr-3" data-icon="person">person</span>
+<span class="font-body-md text-body-md">Profile</span>
+</a>
+<a class="flex items-center px-3 py-3 text-error/80 hover:text-error hover:bg-error/5 transition-all duration-200 rounded-lg" href="/logout">
+<span class="material-symbols-outlined mr-3" data-icon="logout">logout</span>
+<span class="font-body-md text-body-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Application Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface h-full relative overflow-hidden">
+<!-- TopNavBar -->
+<header class="w-full h-16 flex items-center justify-between px-margin-mobile md:px-margin-desktop sticky top-0 z-50 backdrop-blur-md bg-white/3 border-b border-white/10">
+<div class="flex items-center gap-4 flex-1">
+<div class="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10">
+<span class="material-symbols-outlined text-on-surface" data-icon="menu">menu</span>
+</div>
+<div class="max-w-md w-full hidden md:block">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant pointer-events-none" data-icon="search">search</span>
+<input class="w-full bg-black/40 border border-white/10 rounded-full py-2 pl-10 pr-4 text-body-md focus:outline-none focus:border-primary transition-all" placeholder="Search insights..." type="text"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="hover:bg-white/5 rounded-full p-2 transition-colors relative">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border border-surface"></span>
+</button>
+<button class="hover:bg-white/5 rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-white/20 ml-2">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a creative tech entrepreneur with short hair, wearing a minimalist black turtleneck, set against a blurred cinematic studio background with cool blue and warm amber lighting highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC22dG0TfkLUhV-2H6mJU8BGnojXkJk8Z-YW6o-AAqozzN1BnZCmZrJ5YkXOPeMwAqROom8e0UGo4-GU3mRQ76rPstvVm34G7hUpV6R6TusczeEJP_Bq0hgC6UwxoCrSO-Saj3-qvqe4xGvJmGdD4IOAj4UrqDDgDnX2XLxyZd5yEjEHcVyq0-Xgjd1NqPn-IgXbWQX9D4OpYtG1FYy1kNq_A70w8q8cwb0fRe8J4c2v0IsLsz2M3Q0"/>
+</div>
+</div>
+</header>
+<!-- Application Content Split View -->
+<section class="flex-1 flex overflow-hidden">
+<!-- Category Sidebar (Internal Navigation) -->
+<div class="hidden lg:flex flex-col w-72 border-r border-white/5 p-6 space-y-4 custom-scrollbar overflow-y-auto">
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Workspace</h2>
+<!-- Category Cards -->
+<button class="glass-card glass-active text-left p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group">
+<div class="flex items-center justify-between mb-2">
+<div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary border border-primary/30 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="description" data-weight="fill">description</span>
+</div>
+<span class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Active</span>
+</div>
+<h3 class="font-semibold text-on-surface">Resume Help</h3>
+<p class="text-xs text-on-surface-variant mt-1">Optimize your profile for ATS and recruiters.</p>
+</button>
+<button class="glass-card text-left p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group">
+<div class="flex items-center justify-between mb-2">
+<div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-on-surface-variant border border-white/10 group-hover:bg-primary/10 group-hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+</div>
+</div>
+<h3 class="font-semibold text-on-surface">Internship Help</h3>
+<p class="text-xs text-on-surface-variant mt-1">Find and apply for top-tier summer roles.</p>
+</button>
+<button class="glass-card text-left p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group">
+<div class="flex items-center justify-between mb-2">
+<div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-on-surface-variant border border-white/10 group-hover:bg-primary/10 group-hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="navigation">navigation</span>
+</div>
+</div>
+<h3 class="font-semibold text-on-surface">Career Guidance</h3>
+<p class="text-xs text-on-surface-variant mt-1">Strategic advice for long-term growth.</p>
+</button>
+<button class="glass-card text-left p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group">
+<div class="flex items-center justify-between mb-2">
+<div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-on-surface-variant border border-white/10 group-hover:bg-primary/10 group-hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</div>
+</div>
+<h3 class="font-semibold text-on-surface">Programming Doubts</h3>
+<p class="text-xs text-on-surface-variant mt-1">Code review and logic troubleshooting.</p>
+</button>
+<button class="glass-card text-left p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group">
+<div class="flex items-center justify-between mb-2">
+<div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-on-surface-variant border border-white/10 group-hover:bg-primary/10 group-hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+</div>
+</div>
+<h3 class="font-semibold text-on-surface">Study Plan</h3>
+<p class="text-xs text-on-surface-variant mt-1">Structured learning for new skillsets.</p>
+</button>
+</div>
+<!-- Chat Window Main Area -->
+<div class="flex-1 flex flex-col relative">
+<!-- Chat History -->
+<div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 custom-scrollbar">
+<!-- AI Message -->
+<div class="flex gap-4 max-w-3xl">
+<div class="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex-shrink-0 flex items-center justify-center shadow-[0_0_15px_rgba(0,209,255,0.2)]">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="chat-bubble-ai p-5 rounded-2xl rounded-tl-none">
+<p class="font-body-md text-on-surface leading-relaxed">
+                                Hello Alex! I've analyzed your current resume against the **Senior Frontend Engineer** roles you're targeting. 
+                                <br/><br/>
+                                I've noticed your "Experience" section could use more quantifiable metrics. Would you like me to suggest some bullet points based on your React projects?
+                            </p>
+<div class="mt-4 flex flex-wrap gap-2">
+<button class="px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-semibold hover:bg-primary/20 transition-all">Yes, suggest metrics</button>
+<button class="px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-on-surface-variant text-xs font-semibold hover:bg-white/10 transition-all">Check ATS score</button>
+</div>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-4 max-w-2xl ml-auto flex-row-reverse">
+<div class="w-10 h-10 rounded-full border border-white/20 flex-shrink-0 overflow-hidden">
+<img alt="User" class="w-full h-full object-cover" data-alt="A profile photo of a person for chat interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVHLlHsFxfpe1R0EOjj_Ch9b86JRlVzV9NRb-NjRrIGM64lAAF84yhnQ0mL6WeZFRJX0pdASKdG8GMNYuNQNaYkjhPU2EYsWleDzKvQdbUL8pkBC33xnvNUJjDExwIuOWy0F6ms1xfBoOAof5keBttX8LHRo7C-Qs2gwPy91H_ZVKDgJ60joyWYpR61YWpTYwDO136ZcsMkSMTnEfgo58mrZxd079_LWeVZdG42Wxg40uuu_wrIqnP"/>
+</div>
+<div class="chat-bubble-user p-5 rounded-2xl rounded-tr-none shadow-lg">
+<p class="font-body-md text-white font-medium leading-relaxed">
+                                That would be great! Specifically for my work at TechFlow on the dashboard redesign. We saw some significant speed improvements.
+                            </p>
+</div>
+</div>
+<!-- AI Message (AI thinking/typing state placeholder) -->
+<div class="flex gap-4 max-w-3xl">
+<div class="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="chat-bubble-ai p-5 rounded-2xl rounded-tl-none flex items-start gap-4">
+<div class="flex-1 space-y-4">
+<p class="font-body-md text-on-surface leading-relaxed">
+                                    Got it. Here are three high-impact bullet points for that project:
+                                </p>
+<div class="space-y-3 pl-4 border-l-2 border-primary/30">
+<p class="text-body-md text-on-surface-variant italic">"Engineered a dashboard redesign using React and Redux, resulting in a **40% reduction in initial load times** across the enterprise platform."</p>
+<p class="text-body-md text-on-surface-variant italic">"Optimized API polling strategies which decreased server load by **25%** while maintaining real-time data accuracy for 10k+ concurrent users."</p>
+<p class="text-body-md text-on-surface-variant italic">"Spearheaded the migration to Vite, improving local development cold-start time from **30s to &lt;2s**."</p>
+</div>
+<div class="pt-2 flex items-center gap-3">
+<button class="flex items-center gap-1.5 text-xs text-primary font-bold hover:underline">
+<span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span> Copy All
+                                    </button>
+<button class="flex items-center gap-1.5 text-xs text-primary font-bold hover:underline">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span> PDF Export
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sleek Bottom Input Bar -->
+<div class="p-6 md:p-10 pt-0">
+<div class="max-w-4xl mx-auto glass-card rounded-[28px] p-2 pr-4 flex items-center gap-2 glow-accent border-white/20 focus-within:border-primary/50 transition-all shadow-2xl">
+<button class="w-12 h-12 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors hover:bg-white/5 rounded-full">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<input class="flex-1 bg-transparent border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 py-3 text-body-lg" placeholder="Ask CareerMate AI anything..." type="text"/>
+<div class="flex items-center gap-1">
+<button class="w-10 h-10 hidden sm:flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 rounded-full" title="Copy last response">
+<span class="material-symbols-outlined text-[20px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="w-10 h-10 hidden sm:flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors hover:bg-white/5 rounded-full" title="Download session">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+</button>
+<button class="w-11 h-11 flex items-center justify-center bg-primary text-on-primary rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined font-bold" data-icon="send" data-weight="fill">send</span>
+</button>
+</div>
+</div>
+<p class="text-center text-[10px] text-on-surface-variant mt-4 opacity-40 uppercase tracking-widest">Powered by GPT-4 &amp; CareerMate Proprietary Career Logic</p>
+</div>
+</div>
+</section>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 md:hidden flex justify-around items-center h-16 px-4 bg-white/10 backdrop-blur-2xl border-t border-white/20">
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-150 active:scale-90" href="/">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-bold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary transition-transform duration-150 active:scale-90" href="/chat">
+<span class="material-symbols-outlined" data-icon="chat_bubble" data-weight="fill">chat_bubble</span>
+<span class="text-[10px] font-bold mt-1">AI Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-150 active:scale-90" href="/dashboard">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="text-[10px] font-bold mt-1">Tools</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-150 active:scale-90" href="/history">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-[10px] font-bold mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant transition-transform duration-150 active:scale-90" href="/profile">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="text-[10px] font-bold mt-1">Profile</span>
+</a>
+</nav>
+</main>
+<script>
+        // Micro-interactions and chat window behavior
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatContainer = document.querySelector('.overflow-y-auto');
+            
+            // Initial scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Simple input focus effect
+            const mainInput = document.querySelector('input[type="text"]');
+            mainInput.addEventListener('focus', () => {
+                mainInput.parentElement.classList.add('scale-[1.01]');
+            });
+            mainInput.addEventListener('blur', () => {
+                mainInput.parentElement.classList.remove('scale-[1.01]');
+            });
+
+            // Handle Send Interaction
+            const sendBtn = document.querySelector('button .material-symbols-outlined[data-icon="send"]').parentElement;
+            sendBtn.addEventListener('click', () => {
+                if(mainInput.value.trim() !== "") {
+                    // Logic for adding a user bubble would go here
+                    mainInput.value = "";
+                    // Fake "typing" feedback
+                    console.log("AI is processing...");
+                }
+            });
+
+            // Keyboard support
+            mainInput.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') sendBtn.click();
+            });
+        });
+    </script>
+</body></html>

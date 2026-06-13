@@ -1,36 +1,318 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>Register | CareerMate AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareerMate AI | Secure Entry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#111318",
+                        "on-primary-container": "#00566a",
+                        "on-surface": "#e2e2e8",
+                        "on-surface-variant": "#bbc9cf",
+                        "inverse-primary": "#00677f",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2f3035",
+                        "surface-container-high": "#282a2e",
+                        "background": "#111318",
+                        "secondary-fixed": "#efdbff",
+                        "outline": "#859399",
+                        "inverse-surface": "#e2e2e8",
+                        "secondary-fixed-dim": "#dcb8ff",
+                        "surface-container": "#1e2024",
+                        "on-background": "#e2e2e8",
+                        "on-secondary-fixed-variant": "#6700b5",
+                        "surface-variant": "#333539",
+                        "primary-fixed": "#b7eaff",
+                        "on-tertiary-fixed": "#002116",
+                        "secondary-container": "#7701d0",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#005a42",
+                        "on-secondary-container": "#dcb7ff",
+                        "on-tertiary": "#003828",
+                        "surface-bright": "#37393e",
+                        "outline-variant": "#3c494e",
+                        "secondary": "#dcb8ff",
+                        "primary": "#a4e6ff",
+                        "tertiary-container": "#00daa5",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary": "#00f9be",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#003543",
+                        "tertiary-fixed-dim": "#00e1ab",
+                        "on-tertiary-fixed-variant": "#00513c",
+                        "surface-container-low": "#1a1c20",
+                        "surface-dim": "#111318",
+                        "on-primary-fixed-variant": "#004e60",
+                        "tertiary-fixed": "#36ffc4",
+                        "primary-container": "#00d1ff",
+                        "on-secondary": "#480081",
+                        "surface-container-highest": "#333539",
+                        "surface-tint": "#4cd6ff",
+                        "on-primary-fixed": "#001f28",
+                        "on-secondary-fixed": "#2c0051",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#4cd6ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "container-max": "1280px",
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+            color: #e2e2e8;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-input:focus {
+            border-color: #00d1ff;
+            box-shadow: 0 0 15px rgba(0, 209, 255, 0.2);
+            outline: none;
+        }
+
+        .primary-gradient {
+            background: linear-gradient(135deg, #00d1ff 0%, #00f9be 100%);
+        }
+
+        .glow-border {
+            position: relative;
+        }
+
+        .glow-border::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #00d1ff, transparent, #00f9be, transparent);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0.3;
+            animation: borderGlow 6s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d1ff, transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(500px); opacity: 0; }
+        }
+
+        .bg-grid {
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+        }
+
+        .animated-blob {
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.2); }
+        }
+    </style>
 </head>
-<body>
-
-<div class="auth-container">
-    <div class="auth-card">
-        <h1>Create Account</h1>
-        <p>Start your personal AI career assistant.</p>
-
-        {% if error %}
-        <div class="error">{{ error }}</div>
-        {% endif %}
-
-        <form method="POST">
-            <input type="text" name="name" placeholder="Enter full name" required>
-            <input type="email" name="email" placeholder="Enter email" required>
-            <input type="password" name="password" placeholder="Create password" required>
-            <button type="submit">Register</button>
-        </form>
-
-        <p class="switch-text">
-            Already have an account?
-            <a href="{{ url_for('login') }}">Login</a>
-        </p>
-    </div>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<!-- Background Elements -->
+<div class="fixed inset-0 bg-grid z-0"></div>
+<div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary animated-blob z-0"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-tertiary animated-blob z-0" style="animation-delay: -10s;"></div>
+<main class="w-full max-w-md z-10">
+<!-- Logo Area -->
+<div class="text-center mb-10">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-primary tracking-tighter">
+                CareerMate AI
+            </h1>
+<p class="font-body-md text-on-surface-variant mt-2">Precision Intelligence for Your Future.</p>
 </div>
+<!-- Auth Card -->
+<div class="glass-card rounded-[24px] p-8 glow-border shadow-2xl relative overflow-hidden" id="auth-card">
+{% if error %}<div class="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">{{ error }}</div>{% endif %}<div class="scan-line"></div>
+<!-- Toggle Tabs -->
+<div class="flex p-1 bg-surface-container-lowest rounded-full mb-8 relative">
+<div class="absolute h-[calc(100%-8px)] w-[calc(50%-4px)] top-1 left-1 primary-gradient rounded-full transition-all duration-300 ease-out" id="tab-highlight"></div>
+<button class="flex-1 py-2 text-center z-10 font-label-caps text-label-caps transition-colors duration-300" id="login-tab-btn" onclick="toggleAuth('login')">LOGIN</button>
+<button class="flex-1 py-2 text-center z-10 font-label-caps text-label-caps transition-colors duration-300" id="signup-tab-btn" onclick="toggleAuth('signup')">REGISTER</button>
+</div>
+<!-- Form Container -->
+<div class="space-y-6">
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4">
+<button class="glass-card hover:bg-white/10 flex items-center justify-center py-3 rounded-xl transition-all duration-200 active:scale-95">
+<img alt="Google" class="w-5 h-5 mr-3" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfhMDoxbEQGjRwF2-ABaG-DllnnatzHUIHMM8gAPQP6I1kwPMi-CimJ7Aa6UJgevzIZHrGIboxofBhRME3OKOiUzkCXofy_76QTPB2NG_jmR1uXidn3M_BQjPWfe0TJFiNHs_RXyUOEPoBKoeUeey4l0NKVtEhGIJEdFPIfKkyPtoDqzRdFjXpSMoNvPbJOdhnzlLp_dSEFc2gzUkNNSOccPRhrop-SFG5-y_KV8HbuQ4jBfWx8_pf"/>
+<span class="font-label-caps text-label-caps">GOOGLE</span>
+</button>
+<button class="glass-card hover:bg-white/10 flex items-center justify-center py-3 rounded-xl transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined text-on-surface mr-3">terminal</span>
+<span class="font-label-caps text-label-caps">GITHUB</span>
+</button>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant/30">
+<div class="h-px flex-1 bg-current"></div>
+<span class="font-label-caps text-label-caps text-on-surface-variant">OR EMAIL</span>
+<div class="h-px flex-1 bg-current"></div>
+</div>
+<!-- Login Form -->
+<form action="{{ url_for('login') }}" class="space-y-5 transition-all duration-300" id="login-form" method="POST">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant ml-1">WORK EMAIL</label>
+<input class="w-full glass-input rounded-xl px-4 py-3 font-body-md text-on-surface" name="email" placeholder="Enter email" required="required" type="email"/>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="font-label-caps text-label-caps text-on-surface-variant">PASSWORD</label>
+<a class="text-[10px] text-primary hover:underline font-bold uppercase tracking-wider" href="#">Forgot?</a>
+</div>
+<input class="w-full glass-input rounded-xl px-4 py-3 font-body-md text-on-surface" name="password" placeholder="Enter password" required="required" type="password"/>
+</div>
+<button class="w-full primary-gradient py-4 rounded-xl font-headline-md text-headline-md text-on-primary font-bold shadow-[0_0_20px_rgba(0,209,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all duration-200" type="submit">
+                        ACCESS SYSTEM
+                    </button>
+</form>
+<!-- Signup Form (Hidden by default) -->
+<form action="{{ url_for('register') }}" class="space-y-5 hidden transition-all duration-300" id="signup-form" method="POST">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant ml-1">FIRST NAME</label>
+<input class="w-full glass-input rounded-xl px-4 py-3 font-body-md text-on-surface" name="name" placeholder="Alex" required="required" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant ml-1">LAST NAME</label>
+<input class="w-full glass-input rounded-xl px-4 py-3 font-body-md text-on-surface" name="last_name" placeholder="Chen" required="required" type="text"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant ml-1">WORK EMAIL</label>
+<input class="w-full glass-input rounded-xl px-4 py-3 font-body-md text-on-surface" name="email" placeholder="alex.chen@future.ai" required="required" type="email"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant ml-1">SECURE PASSWORD</label>
+<input class="w-full glass-input rounded-xl px-4 py-3 font-body-md text-on-surface" name="password" placeholder="Min. 12 characters" required="required" type="password"/>
+</div>
+<div class="flex items-center gap-2 px-1">
+<input class="rounded border-white/10 bg-black/40 text-primary focus:ring-primary focus:ring-offset-0" id="terms" name="terms" type="checkbox"/>
+<label class="text-[11px] text-on-surface-variant leading-tight" for="terms">
+                            I agree to the <span class="text-primary cursor-pointer underline">Neural Protocols</span> and Privacy Sandbox.
+                        </label>
+</div>
+<button class="w-full primary-gradient py-4 rounded-xl font-headline-md text-headline-md text-on-primary font-bold shadow-[0_0_20px_rgba(0,209,255,0.3)] hover:scale-[1.02] active:scale-95 transition-all duration-200" type="submit">
+                        INITIALIZE PROFILE
+                    </button>
+</form>
+</div>
+<!-- Footer Note -->
+<p class="mt-8 text-center text-on-surface-variant/40 font-label-caps text-[10px] tracking-[0.2em] uppercase">
+                Encrypted Neural Link Active • AES-256
+            </p>
+</div>
+<!-- Decorative Floating Stats -->
+<div class="hidden lg:block absolute left-[-150px] top-1/2 -translate-y-1/2 space-y-4">
+<div class="glass-card p-4 rounded-2xl w-48 border-l-4 border-primary">
+<p class="text-[10px] font-bold text-primary-container tracking-widest uppercase">Nodes Online</p>
+<h3 class="text-2xl font-black text-on-surface">2,491k</h3>
+</div>
+<div class="glass-card p-4 rounded-2xl w-40 ml-8 border-l-4 border-tertiary">
+<p class="text-[10px] font-bold text-tertiary-container tracking-widest uppercase">AI Latency</p>
+<h3 class="text-2xl font-black text-on-surface">0.04ms</h3>
+</div>
+</div>
+</main>
+<script>
+        function toggleAuth(type) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const highlight = document.getElementById('tab-highlight');
+            const loginBtn = document.getElementById('login-tab-btn');
+            const signupBtn = document.getElementById('signup-tab-btn');
 
-</body>
-</html>
+            if (type === 'signup') {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                highlight.style.transform = 'translateX(100%)';
+                signupBtn.classList.add('text-on-primary');
+                loginBtn.classList.remove('text-on-primary');
+                loginBtn.classList.add('text-on-surface-variant');
+            } else {
+                signupForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                highlight.style.transform = 'translateX(0)';
+                loginBtn.classList.add('text-on-primary');
+                signupBtn.classList.remove('text-on-primary');
+                signupBtn.classList.add('text-on-surface-variant');
+            }
+        }
 
+        // Initialize default state
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleAuth('login');
+        });
+    </script>
+<script>document.addEventListener('DOMContentLoaded',()=>{if(typeof toggleAuth==='function') toggleAuth('signup');});</script></body></html>

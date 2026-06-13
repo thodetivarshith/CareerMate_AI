@@ -1,193 +1,566 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <title>Admin | CareerMate AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CareerMate AI | Admin Console</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#111318",
+                    "on-primary-container": "#00566a",
+                    "on-surface": "#e2e2e8",
+                    "on-surface-variant": "#bbc9cf",
+                    "inverse-primary": "#00677f",
+                    "on-error": "#690005",
+                    "inverse-on-surface": "#2f3035",
+                    "surface-container-high": "#282a2e",
+                    "background": "#111318",
+                    "secondary-fixed": "#efdbff",
+                    "outline": "#859399",
+                    "inverse-surface": "#e2e2e8",
+                    "secondary-fixed-dim": "#dcb8ff",
+                    "surface-container": "#1e2024",
+                    "on-background": "#e2e2e8",
+                    "on-secondary-fixed-variant": "#6700b5",
+                    "surface-variant": "#333539",
+                    "primary-fixed": "#b7eaff",
+                    "on-tertiary-fixed": "#002116",
+                    "secondary-container": "#7701d0",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#005a42",
+                    "on-secondary-container": "#dcb7ff",
+                    "on-tertiary": "#003828",
+                    "surface-bright": "#37393e",
+                    "outline-variant": "#3c494e",
+                    "secondary": "#dcb8ff",
+                    "primary": "#a4e6ff",
+                    "tertiary-container": "#00daa5",
+                    "surface-container-lowest": "#0c0e12",
+                    "tertiary": "#00f9be",
+                    "on-error-container": "#ffdad6",
+                    "on-primary": "#003543",
+                    "tertiary-fixed-dim": "#00e1ab",
+                    "on-tertiary-fixed-variant": "#00513c",
+                    "surface-container-low": "#1a1c20",
+                    "surface-dim": "#111318",
+                    "on-primary-fixed-variant": "#004e60",
+                    "tertiary-fixed": "#36ffc4",
+                    "primary-container": "#00d1ff",
+                    "on-secondary": "#480081",
+                    "surface-container-highest": "#333539",
+                    "surface-tint": "#4cd6ff",
+                    "on-primary-fixed": "#001f28",
+                    "on-secondary-fixed": "#2c0051",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#4cd6ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "container-max": "1280px",
+                    "unit": "4px",
+                    "gutter": "24px",
+                    "margin-desktop": "40px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #050505;
+            color: #e2e2e8;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 209, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 209, 255, 0.05);
+        }
+        .active-glow {
+            box-shadow: inset 0 0 15px rgba(0, 209, 255, 0.15);
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d1ff, transparent);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0c0e12; }
+        ::-webkit-scrollbar-thumb { background: #333539; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4cd6ff; }
+    </style>
 </head>
-<body>
-
-<div class="app-layout">
-
-    <aside class="sidebar">
-        <h2>Admin Panel</h2>
-        <a href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a href="{{ url_for('chat') }}">AI Chat</a>
-        <a href="{{ url_for('history') }}">History</a>
-        <a href="{{ url_for('profile') }}">Profile</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </aside>
-
-    <main class="main-content">
-        <section class="hero-card">
-            <div>
-                <span class="badge">Admin Dashboard</span>
-                <h1>System Analytics</h1>
-                <p>Monitor users, chats, tool usage, and uploaded resumes.</p>
-            </div>
-        </section>
-
-        <section class="stats-grid">
-            <div class="stat-card"><h2>{{ stats.total_users }}</h2><p>Total Users</p></div>
-            <div class="stat-card"><h2>{{ stats.total_chats }}</h2><p>Total Chats</p></div>
-            <div class="stat-card"><h2>{{ stats.total_tools }}</h2><p>Tool Results</p></div>
-            <div class="stat-card"><h2>{{ stats.total_resumes }}</h2><p>Uploaded Resumes</p></div>
-        </section>
-
-        <section class="panel">
-            <div class="result-actions">
-                <h2>All Chat History</h2>
-                <form method="POST" action="{{ url_for('admin_clear_all') }}">
-                    <button class="danger-btn" type="submit">Clear All Chats</button>
-                </form>
-            </div>
-
-            <form method="GET" class="search-form">
-                <input type="text" name="q" value="{{ search_query }}" placeholder="Search all chats...">
-                <button type="submit">Search</button>
-            </form>
-        </section>
-
-        {% if chats %}
-            {% for chat in chats %}
-            <section class="panel">
-                <p><strong>Name:</strong> {{ chat[1] }}</p>
-                <p><strong>Email:</strong> {{ chat[2] }}</p>
-                <p><strong>User:</strong> {{ chat[3] }}</p>
-                <p><strong>Bot:</strong> {{ chat[4] }}</p>
-                <small>{{ chat[5] }}</small>
-
-                <form method="POST" action="{{ url_for('delete_chat', chat_id=chat[0]) }}">
-                    <input type="hidden" name="source" value="admin">
-                    <button class="danger-small" type="submit">Delete</button>
-                </form>
-            </section>
-            {% endfor %}
-        {% else %}
-            <section class="panel"><p class="muted">No chats found.</p></section>
-        {% endif %}
-    </main>
-
+<body class="flex min-h-screen">
+<!-- SIDEBAR NAVIGATION (JSON: SideNavBar) -->
+<aside class="h-screen w-64 hidden md:flex flex-col border-r border-white/10 bg-opacity-30 backdrop-blur-xl bg-surface-container-lowest sticky top-0 shadow-[0_0_20px_rgba(0,209,255,0.05)] py-6 z-50">
+<div class="px-6 mb-10 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">terminal</span>
 </div>
-
-</body>
-</html>
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareerMate AI | Admin Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-
-<div class="layout">
-
-    <aside class="sidebar">
-        <h2 class="logo">CareerMate AI</h2>
-        <p class="sidebar-subtitle">Admin Panel</p>
-
-        <a href="/">Dashboard</a>
-        <a href="/history">Chat History</a>
-        <a href="/admin" class="active">Admin</a>
-        <a href="/logout">Logout</a>
-    </aside>
-
-    <main class="main-content">
-
-        <section class="page-header">
-            <h1>Admin Dashboard</h1>
-            <p>Monitor CareerMate AI user activity, chat history, and unknown questions.</p>
-        </section>
-
-        <section class="dashboard-grid">
-
-            <div class="stat-card">
-                <h3>Total Users</h3>
-                <p>{{ total_users if total_users else 0 }}</p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Total Chats</h3>
-                <p>{{ total_chats if total_chats else 0 }}</p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Unknown Questions</h3>
-                <p>{{ total_unknown if total_unknown else 0 }}</p>
-            </div>
-
-        </section>
-
-        <section class="card">
-            <h2>Recent Chat History</h2>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User Question</th>
-                            <th>AI Response</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% if chats %}
-                            {% for chat in chats %}
-                            <tr>
-                                <td>{{ chat[1] }}</td>
-                                <td>{{ chat[2] }}</td>
-                                <td>{{ chat[3] }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="3">No chat history found.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <br>
-
-        <section class="card">
-            <h2>Unknown Questions</h2>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Question</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% if unknown_questions %}
-                            {% for q in unknown_questions %}
-                            <tr>
-                                <td>{{ q[1] }}</td>
-                                <td>{{ q[2] }}</td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="2">No unknown questions found.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-    </main>
-
+<h1 class="font-display-lg text-headline-md font-bold text-primary">CareerMate AI</h1>
 </div>
-
-</body>
-</html>
+<nav class="flex-1 space-y-1 px-3 overflow-y-auto">
+<!-- Nav Item: Admin (Active) -->
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-primary font-bold border-l-4 border-primary bg-white/5 transition-all duration-200" href="/admin">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">admin_panel_settings</span>
+                Admin
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/dashboard">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">dashboard</span>
+                Dashboard
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/chat">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">smart_toy</span>
+                AI Chat
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/resume">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">description</span>
+                Resume Analyzer
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/roadmap">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">map</span>
+                Roadmap
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/interview">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">mic</span>
+                Interview Practice
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/projects">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">assignment</span>
+                Projects
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/history">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">history</span>
+                History
+            </a>
+<a class="group flex items-center px-3 py-3 font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all duration-200 rounded-r-lg" href="/profile">
+<span class="material-symbols-outlined mr-3 group-hover:scale-110 transition-transform">person</span>
+                Profile
+            </a>
+</nav>
+<div class="mt-auto px-4 pt-6 border-t border-white/10">
+<div class="flex items-center gap-3 p-2 glass-card rounded-xl mb-4">
+<img alt="User Profile Avatar" class="w-10 h-10 rounded-full border border-primary/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0AxPacKtdTJfUwu6fHQ4WABBEBCzC0FNr-Mp1vETUAWPak70jRlIF3_eebsfCg-HoC7jwpMgk3eUZP7hGL4r1x-1TdMSBfx2YjdbQU7wqRxXcbpCcqvsk-u-bSsaeLQWUwq3J3HaDJ5seFhw_CLcqCfXNBalRPbNUz8jy9Ta5MARCQfQgkt7CDV2sb50GNNiBx0fEmP7YvswxOVVlVupKv7ye27P6BvMGtUcRNvDSdWZ39K6bH7Ij"/>
+<div class="overflow-hidden">
+<p class="font-bold text-on-surface truncate">Chief Architect</p>
+<p class="text-xs text-primary">AI Mentor Active</p>
+</div>
+</div>
+<a class="flex items-center px-3 py-3 font-body-md text-body-md text-error hover:bg-error-container hover:text-on-error-container transition-all duration-200 rounded-lg" href="/logout">
+<span class="material-symbols-outlined mr-3">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface overflow-hidden relative">
+<!-- TOP NAV (JSON: TopNavBar) -->
+<header class="sticky top-0 z-40 flex justify-between items-center px-margin-mobile md:px-margin-desktop w-full h-16 bg-opacity-20 backdrop-blur-md bg-surface-container border-b border-white/10">
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full pl-10 pr-4 py-1.5 w-64 md:w-96 text-sm focus:ring-1 focus:ring-primary placeholder:text-outline-variant transition-all" placeholder="Search system logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-white/5 rounded-full p-2 transition-colors relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="hover:bg-white/5 rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-white/10 mx-2"></div>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZZb7ATAbWM6h4Jw4kQgK6WKbo6BEwX0SmMcHp06tWINZN_s1LRQaxX_UV3akE1olQZjBFm2TOB34YkvzdVwG0_vL4aJRXKxeMklhjBtYBgdMD6uT-AtT1b4VKU_YXeKzBy-pIoxprK7Env1fYlno6MjVW5IM7CCtnMPk19IfK-o5OdIA15N7KshV8BJ4OLgtH83Sy_MBHxyRabQrCAfEZ-MNlzoysrOAAOJWcrOdMEjG9x_q9-9ab"/>
+</div>
+</header>
+<!-- DASHBOARD CANVAS -->
+<div class="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop space-y-10 max-w-container-max mx-auto w-full">
+<!-- HEADER SECTION -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface tracking-tight">System Overview</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">Real-time telemetry and user engagement metrics for the CareerMate AI infrastructure.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-label-caps text-label-caps flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span> Export Report
+                    </button>
+<button class="px-6 py-2.5 rounded-full bg-gradient-to-r from-primary-container to-tertiary-container text-on-primary font-label-caps text-label-caps shadow-[0_0_20px_rgba(0,209,255,0.2)] hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span> Refresh Nodes
+                    </button>
+</div>
+</div>
+<!-- KPI GRID (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- KPI: Total Users -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">groups</span>
+</div>
+<span class="text-tertiary text-xs font-bold">+12.5%</span>
+</div>
+<p class="text-on-surface-variant font-label-caps text-label-caps">Total Users</p>
+<h3 class="text-4xl font-black text-on-surface mt-1">12,842</h3>
+<div class="scanline"></div>
+</div>
+<!-- KPI: Total Chats -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary/10 rounded-lg">
+<span class="material-symbols-outlined text-secondary">forum</span>
+</div>
+<span class="text-tertiary text-xs font-bold">+8.2%</span>
+</div>
+<p class="text-on-surface-variant font-label-caps text-label-caps">Total Chats</p>
+<h3 class="text-4xl font-black text-on-surface mt-1">84,910</h3>
+</div>
+<!-- KPI: Uploaded Resumes -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-tertiary/10 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">upload_file</span>
+</div>
+<span class="text-tertiary text-xs font-bold">+24.0%</span>
+</div>
+<p class="text-on-surface-variant font-label-caps text-label-caps">Uploaded Resumes</p>
+<h3 class="text-4xl font-black text-on-surface mt-1">3,412</h3>
+</div>
+<!-- KPI: Unknown Questions -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-error/10 rounded-lg">
+<span class="material-symbols-outlined text-error">quiz</span>
+</div>
+<span class="text-error text-xs font-bold">-4.1%</span>
+</div>
+<p class="text-on-surface-variant font-label-caps text-label-caps">Unknown Questions</p>
+<h3 class="text-4xl font-black text-on-surface mt-1">142</h3>
+</div>
+</div>
+<!-- ANALYTICS CHARTS -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- LINE CHART: System Activity -->
+<div class="lg:col-span-2 glass-card rounded-2xl p-8">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">System Activity</h4>
+<p class="text-sm text-on-surface-variant">Request frequency over last 24 hours</p>
+</div>
+<div class="flex gap-2 bg-white/5 p-1 rounded-lg">
+<button class="px-3 py-1 text-xs rounded bg-white/10 text-primary">24H</button>
+<button class="px-3 py-1 text-xs rounded text-on-surface-variant hover:bg-white/5">7D</button>
+<button class="px-3 py-1 text-xs rounded text-on-surface-variant hover:bg-white/5">30D</button>
+</div>
+</div>
+<!-- Simulated Line Chart -->
+<div class="h-64 flex items-end justify-between gap-2 relative">
+<div class="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none opacity-20">
+<div class="border-t border-white w-full"></div>
+<div class="border-t border-white w-full"></div>
+<div class="border-t border-white w-full"></div>
+<div class="border-t border-white w-full"></div>
+</div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 40%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 55%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 75%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 60%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 85%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 95%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 65%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 50%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 45%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 70%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 80%"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 w-full rounded-t-sm" style="height: 90%"></div>
+</div>
+</div>
+<!-- DISTRIBUTION CARD -->
+<div class="glass-card rounded-2xl p-8 flex flex-col">
+<h4 class="font-headline-md text-headline-md text-on-surface mb-2">User Segments</h4>
+<p class="text-sm text-on-surface-variant mb-8">AI feature utilization distribution</p>
+<div class="space-y-6 flex-1">
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-sm font-medium">Resume Analysis</span>
+<span class="text-sm text-primary">68%</span>
+</div>
+<div class="h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[68%] transition-all duration-1000"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-sm font-medium">Mock Interviews</span>
+<span class="text-sm text-secondary">42%</span>
+</div>
+<div class="h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[42%] transition-all duration-1000"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-sm font-medium">Chat Coaching</span>
+<span class="text-sm text-tertiary">89%</span>
+</div>
+<div class="h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[89%] transition-all duration-1000"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-white/10 flex items-center justify-between">
+<div class="text-center">
+<p class="text-xs text-on-surface-variant">API Latency</p>
+<p class="text-xl font-bold text-tertiary">142ms</p>
+</div>
+<div class="text-center">
+<p class="text-xs text-on-surface-variant">Uptime</p>
+<p class="text-xl font-bold text-primary">99.9%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- RECENT USERS TABLE -->
+<div class="glass-card rounded-2xl overflow-hidden">
+<div class="p-8 border-b border-white/10 flex justify-between items-center">
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface">Recent Users</h4>
+<p class="text-sm text-on-surface-variant">Last 50 registrations across all regions</p>
+</div>
+<button class="p-2 hover:bg-white/5 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-white/5 font-label-caps text-label-caps text-on-surface-variant">
+<th class="px-8 py-4 font-semibold">User</th>
+<th class="px-8 py-4 font-semibold">Plan</th>
+<th class="px-8 py-4 font-semibold">Activity</th>
+<th class="px-8 py-4 font-semibold">Location</th>
+<th class="px-8 py-4 font-semibold">Status</th>
+<th class="px-8 py-4 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/10">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<img alt="User Image" class="w-10 h-10 rounded-full border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH5oOnZTsPDqGcLNzsr7GARPGahyQddzxhhX9TvX8SCKJq1WAF9TBx8nmBaIYcdk436VSvWup-duusGvOxvl5U4EjO3tArEY7BmWrM9Aa6QanAladPVGWtKALGSAuzpdPkRiWvXs0AFw1jlzH3Q9hVynyCtDqmnX3T8zqIn0I583LKUCSsHPY_Na16mw_owHxvAu9LaI5O_2DfG0YxlQD0gr_uA7LovVox84wrm59PK_jPQf4kcprM"/>
+<div>
+<p class="font-bold text-on-surface">Alex Rivera</p>
+<p class="text-xs text-on-surface-variant">alex.riv@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold border border-primary/20">Pro Mentor</span>
+</td>
+<td class="px-8 py-5 text-sm">2h ago</td>
+<td class="px-8 py-5 text-sm">San Francisco, US</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+<span class="text-sm">Online</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<img alt="User Image" class="w-10 h-10 rounded-full border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACM6jWuiRZ2piSNvAy7xMfg0kwLo2Dl1RruR84ei-K3SootxPSf2laz8r68MSKRau80dM_ks-NTIjDH103qVl0HscmGpd455TnxIa2ITbF6TCDXFvJgl7bpVPFki7QMgOnkNrE8kiWLZqOwNkr9Bf4wA4ZUxRLQIAR-qM-ixASqwcmlgxYbwrdLNob1mXQzVkROuRHuCQREsf-vb5TSpGPW0hFDxewfdAkNL0yugbVpaWvTMTNTUY3"/>
+<div>
+<p class="font-bold text-on-surface">Sarah Chen</p>
+<p class="text-xs text-on-surface-variant">s.chen@tech.org</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-white/5 text-on-surface-variant rounded-full text-xs font-bold border border-white/10">Standard</span>
+</td>
+<td class="px-8 py-5 text-sm">5h ago</td>
+<td class="px-8 py-5 text-sm">Singapore</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-white/20"></div>
+<span class="text-sm text-on-surface-variant">Offline</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<img alt="User Image" class="w-10 h-10 rounded-full border border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmN0SatkVZpqpvqFopuPT1KdmHcAGHoTfV75oUDBLIwRPyUIXCSqz0pUGgkEZWwhiNg0NFN-mY6uZlCfk8yHIqSBj_RXFv2viYqRZK-kntgePkfUf23PMRwemW2TyvNm1zw_x8BVvWJqgBWmc0DvAID0DPA_HmJDvQ_57d7402TTToTx_iCjmWn-OgMAnZjEi6kglelSbDWBRhc1mXdXGOv3oPRnKPhYAZ-BO4ZbelHh4bEBuFtrT9"/>
+<div>
+<p class="font-bold text-on-surface">Marcus Thorne</p>
+<p class="text-xs text-on-surface-variant">m.thorne@global.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs font-bold border border-secondary/20">Enterprise</span>
+</td>
+<td class="px-8 py-5 text-sm">Just now</td>
+<td class="px-8 py-5 text-sm">London, UK</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#00f9be]"></div>
+<span class="text-sm">Online</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 bg-white/2 flex items-center justify-between">
+<p class="text-xs text-on-surface-variant">Showing 3 of 12,842 users</p>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-white/10 hover:bg-white/5 disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 rounded-lg border border-white/10 hover:bg-white/5">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- SYSTEM STATUS MONITOR -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 pb-margin-desktop">
+<div class="glass-card p-6 rounded-2xl flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">memory</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-bold">NODE CLUSTER 01</p>
+<p class="text-lg font-bold">Stable - 24% CPU</p>
+</div>
+</div>
+<div class="glass-card p-6 rounded-2xl flex items-center gap-4 border-l-4 border-primary">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-bold">NEURAL ENGINE</p>
+<p class="text-lg font-bold">Active - 89.2 TFLOPS</p>
+</div>
+</div>
+<div class="glass-card p-6 rounded-2xl flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">database</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-bold">VECTOR STORE</p>
+<p class="text-lg font-bold">94% Latency Green</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- MOBILE NAVIGATION (JSON: BottomNavBar) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 px-4 bg-opacity-40 backdrop-blur-2xl bg-surface-container-highest border-t border-white/20 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-transform" href="/">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-transform" href="/chat">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-label-caps text-label-caps mt-1">AI Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-transform" href="/dashboard">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-caps text-label-caps mt-1">Tools</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-transform" href="/history">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary active:scale-90 transition-transform" href="/admin">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+<span class="font-label-caps text-label-caps mt-1">Admin</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for admin panel
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+        
+        // Random numbers update simulation
+        setInterval(() => {
+            const unknownQ = document.querySelector('h3:last-child');
+            if (unknownQ && Math.random() > 0.7) {
+                const current = parseInt(unknownQ.innerText);
+                unknownQ.innerText = Math.max(100, current + (Math.random() > 0.5 ? 1 : -1));
+            }
+        }, 5000);
+    </script>
+</body></html>
