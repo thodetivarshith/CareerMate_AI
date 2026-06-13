@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerMate AI | Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <h2 class="logo">CareerMate AI</h2>
+        <p class="sidebar-subtitle">AI Career Preparation Platform</p>
+
+        <a href="/dashboard">Dashboard</a>
+        <a href="/chat" class="active">AI Chat</a>
+        <a href="/resume-analyzer">Resume Analyzer</a>
+        <a href="/roadmap">Roadmap</a>
+        <a href="/interview">Interview</a>
+        <a href="/history">History</a>
+        <a href="/profile">Profile</a>
+
+        {% if is_admin %}
+        <a href="/admin">Admin</a>
+        {% endif %}
+
+        <a href="/logout">Logout</a>
+    </aside>
+
+    <main class="main-content">
+
+        <section class="chat-page-box">
+
+            <div class="chat-header">
+                <div>
+                    <h1>CareerMate AI Chat</h1>
+                    <p>Ask anything about career, internships, projects, interviews, and coding.</p>
+                </div>
+
+                <span class="online-badge">Online</span>
+            </div>
+
+            <div class="chat-window" id="chatMessages">
+                <div class="bot-message">
+                    Hello {{ user_name if user_name else "student" }}! Ask me about internships, resume, skills, projects, interviews, or programming doubts.
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button type="button" onclick="sendQuickPrompt('Suggest a roadmap to become an AI engineer')">AI Roadmap</button>
+                <button type="button" onclick="sendQuickPrompt('Give me resume tips for a Python internship')">Resume Tips</button>
+                <button type="button" onclick="sendQuickPrompt('Ask me interview questions for internship preparation')">Interview</button>
+                <button type="button" onclick="sendQuickPrompt('Suggest beginner friendly AI ML projects')">Projects</button>
+            </div>
+
+            <form id="chatForm" class="chat-input-area">
+                <textarea id="userInput" placeholder="Type your message here..." required></textarea>
+                <button type="submit" id="sendBtn">Send</button>
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    const chatForm = document.getElementById("chatForm");
+    const userInput = document.getElementById("userInput");
+    const chatMessages = document.getElementById("chatMessages");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function addMessage(text, className) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = className;
+        messageDiv.innerText = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage(message) {
+        if (message.trim() === "") {
+            return;
+        }
+
+        addMessage(message, "user-message");
+
+        sendBtn.disabled = true;
+        sendBtn.innerText = "Thinking...";
+
+        try {
+            const response = await fetch("/get", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            addMessage(data.response, "bot-message");
+
+        } catch (error) {
+            addMessage("Something went wrong. Please try again.", "bot-message");
+        }
+
+        sendBtn.disabled = false;
+        sendBtn.innerText = "Send";
+    }
+
+    chatForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const message = userInput.value.trim();
+        userInput.value = "";
+
+        sendMessage(message);
+    });
+
+    function sendQuickPrompt(promptText) {
+        sendMessage(promptText);
+    }
+</script>
+
+</body>
+</html>

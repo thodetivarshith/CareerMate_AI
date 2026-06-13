@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Resume Analyzer | CareerMate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <h2>CareerMate AI</h2>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('chat') }}">AI Chat</a>
+        <a href="{{ url_for('resume_analyzer') }}">Resume Analyzer</a>
+        <a href="{{ url_for('roadmap') }}">Roadmap</a>
+        <a href="{{ url_for('interview') }}">Interview</a>
+        <a href="{{ url_for('history') }}">History</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        {% if is_admin %}
+        <a href="{{ url_for('admin') }}">Admin</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <main class="main-content">
+        <section class="panel">
+            <h1>AI Resume Analyzer</h1>
+            <p class="muted">Upload PDF resume or paste resume text. Get score, ATS tips, weaknesses, and improvements.</p>
+
+            {% if error %}
+            <div class="error-box">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="tool-form">
+                <label>Upload PDF Resume</label>
+                <input type="file" name="resume_file" accept=".pdf">
+
+                <div class="divider">OR</div>
+
+                <label>Paste Resume Text</label>
+                <textarea name="resume_text" placeholder="Paste your resume text here..."></textarea>
+
+                <button type="submit">Analyze Resume</button>
+            </form>
+        </section>
+
+        {% if result %}
+        <section class="panel">
+            <div class="result-actions">
+                <h2>Resume Analysis Result</h2>
+                <div>
+                    <button onclick="copyResult()">Copy</button>
+                    {% if result_id %}
+                    <a class="small-btn" href="{{ url_for('download_result', result_id=result_id) }}">Download</a>
+                    {% endif %}
+                </div>
+            </div>
+            <pre id="ai-result">{{ result }}</pre>
+        </section>
+        {% endif %}
+
+        <section class="two-column">
+            <div class="panel">
+                <h2>Resume Score History</h2>
+                {% if history %}
+                    {% for item in history %}
+                    <div class="mini-item">
+                        <p><strong>Score:</strong> {{ item[4] if item[4] else 'N/A' }}/100</p>
+                        <small>{{ item[5] }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted">No resume history yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="panel">
+                <h2>Uploaded Resumes</h2>
+                {% if uploaded_resumes %}
+                    {% for resume in uploaded_resumes %}
+                    <div class="mini-item row-between">
+                        <div>
+                            <p>{{ resume[1] }}</p>
+                            <small>{{ resume[4] }}</small>
+                        </div>
+                        <form method="POST" action="{{ url_for('delete_resume', resume_id=resume[0]) }}">
+                            <button class="danger-small" type="submit">Delete</button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted">No uploaded resumes yet.</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+</div>
+
+<script>
+function copyResult() {
+    const text = document.getElementById("ai-result").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Result copied!");
+}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Dashboard | CareerMate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <h2>CareerMate AI</h2>
+
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('chat') }}">AI Chat</a>
+        <a href="{{ url_for('resume_analyzer') }}">Resume Analyzer</a>
+        <a href="{{ url_for('roadmap') }}">Roadmap</a>
+        <a href="{{ url_for('interview') }}">Interview</a>
+        <a href="{{ url_for('history') }}">History</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+
+        {% if is_admin %}
+            <a href="{{ url_for('admin') }}">Admin</a>
+        {% endif %}
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <main class="main-content">
+
+        <section class="hero-card">
+            <div>
+                <span class="badge">Welcome back</span>
+                <h1>{{ user[1] }}</h1>
+                <p>
+                    Continue your career preparation with AI tools,
+                    resume analysis, roadmaps, and interview practice.
+                </p>
+            </div>
+
+            <a class="primary-btn" href="{{ url_for('chat') }}">Start Chat</a>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h2>{{ chat_count }}</h2>
+                <p>Total Chats</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>{{ tool_count }}</h2>
+                <p>AI Tool Results</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>{{ resume_count }}</h2>
+                <p>Uploaded Resumes</p>
+            </div>
+
+            <div class="stat-card">
+                <h2>{{ user[3][:10] }}</h2>
+                <p>Joined Date</p>
+            </div>
+        </section>
+
+        <section class="tool-grid">
+            <a href="{{ url_for('chat') }}" class="tool-card-small">
+                <h3>AI Chat</h3>
+                <p>Ask career, internship, coding, and study doubts.</p>
+            </a>
+
+            <a href="{{ url_for('resume_analyzer') }}" class="tool-card-small">
+                <h3>Resume Analyzer</h3>
+                <p>Upload PDF resume and get score with improvements.</p>
+            </a>
+
+            <a href="{{ url_for('roadmap') }}" class="tool-card-small">
+                <h3>Roadmap Generator</h3>
+                <p>Create a clear roadmap for your target role.</p>
+            </a>
+
+            <a href="{{ url_for('interview') }}" class="tool-card-small">
+                <h3>Interview Practice</h3>
+                <p>Generate questions, answers, and preparation tips.</p>
+            </a>
+        </section>
+
+        <section class="two-column">
+
+            <div class="panel">
+                <h2>Recent Chats</h2>
+
+                {% if recent_chats %}
+                    {% for chat in recent_chats %}
+                    <div class="mini-item">
+                        <p><strong>You:</strong> {{ chat[1] }}</p>
+                        <small>{{ chat[3] }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted">No recent chats yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="panel">
+                <h2>Resume Score History</h2>
+
+                {% if resume_results %}
+                    {% for item in resume_results %}
+                    <div class="mini-item">
+                        <p><strong>Score:</strong> {{ item[4] if item[4] else 'N/A' }}/100</p>
+                        <small>{{ item[5] }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted">No resume analysis yet.</p>
+                {% endif %}
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
+

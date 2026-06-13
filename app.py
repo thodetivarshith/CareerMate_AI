@@ -1,32 +1,13 @@
 import os
 import re
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, Response
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
 
 from chatbot import get_bot_response
 from ai_helper import get_ai_response
-from database import (
-    init_db,
-    register_user,
-    login_user,
-    get_user_chat_history,
-    get_all_chat_history,
-    delete_chat_by_id,
-    clear_user_chat_history,
-    clear_all_chat_history,
-    get_user_profile,
-    get_total_users_count,
-    get_admin_stats,
-    save_tool_result,
-    get_user_tool_results,
-    get_tool_result_by_id,
-    save_uploaded_resume,
-    get_user_uploaded_resumes,
-    get_uploaded_resume_by_id,
-    delete_uploaded_resume_by_id
-)
+import database
 
 
 load_dotenv()
@@ -44,7 +25,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-init_db()
+database.init_db()
 
 
 def login_required():
@@ -105,11 +86,11 @@ def dashboard():
     if not login_required():
         return redirect(url_for("login"))
 
-    user, chat_count, tool_count, resume_count = get_user_profile(session["user_id"])
-    recent_chats = get_user_chat_history(session["user_id"])[:5]
-    resume_results = get_user_tool_results(session["user_id"], "resume")[:5]
-    roadmap_results = get_user_tool_results(session["user_id"], "roadmap")[:5]
-    interview_results = get_user_tool_results(session["user_id"], "interview")[:5]
+    user, chat_count, tool_count, resume_count = database.get_user_profile(session["user_id"])
+    recent_chats = database.get_user_chat_history(session["user_id"])[:5]
+    resume_results = database.get_user_tool_results(session["user_id"], "resume")[:5]
+    roadmap_results = database.get_user_tool_results(session["user_id"], "roadmap")[:5]
+    interview_results = database.get_user_tool_results(session["user_id"], "interview")[:5]
 
     return render_template(
         "dashboard.html",
@@ -131,7 +112,7 @@ def chat():
         return redirect(url_for("login"))
 
     return render_template(
-        "index.html",
+        "chat.html",
         user_name=session.get("user_name"),
         is_admin=is_admin()
     )
@@ -147,7 +128,7 @@ def register():
         if not name or not email or not password:
             return render_template("register.html", error="All fields are required.")
 
-        success = register_user(name, email, password)
+        success = database.register_user(name, email, password)
 
         if success:
             return redirect(url_for("login"))
@@ -163,7 +144,7 @@ def login():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "").strip()
 
-        user = login_user(email, password)
+        user = database.login_user(email, password)
 
         if user:
             session["user_id"] = user["id"]
@@ -182,30 +163,35 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
-
 @app.route("/get", methods=["POST"])
-def get_response():
+def get_bot_response():
     try:
-        if not login_required():
-            return jsonify({"response": "Please login first."})
+        user_msg = ""
 
-        data = request.get_json()
+        # 1. New premium UI sends msg
+        if request.form.get("msg"):
+            user_msg = request.form.get("msg")
 
-        if not data:
-            return jsonify({"response": "No data received from frontend."})
+        # 2. Old UI may send message
+        elif request.form.get("message"):
+            user_msg = request.form.get("message")
 
-        user_message = data.get("message", "").strip()
+        # 3. If frontend sends JSON
+        elif request.is_json:
+            data = request.get_json()
+            user_msg = data.get("msg") or data.get("message") or ""
 
-        if user_message == "":
-            return jsonify({"response": "Please enter a message."})
+        user_msg = user_msg.strip()
 
-        bot_response = get_bot_response(session["user_id"], user_message)
+        if not user_msg:
+            return "No message received. Please type something."
 
-        return jsonify({"response": bot_response})
+        bot_reply = get_ai_response(user_msg)
+
+        return bot_reply
 
     except Exception as e:
-        print("GET ROUTE ERROR:", e)
-        return jsonify({"response": f"Backend error: {str(e)}"})
+        return f"AI Error: {str(e)}"
 
 
 @app.route("/history")
@@ -214,7 +200,7 @@ def history():
         return redirect(url_for("login"))
 
     search_query = request.args.get("q", "").strip()
-    chats = get_user_chat_history(session["user_id"], search_query)
+    chats = database.get_user_chat_history(session["user_id"], search_query)
 
     return render_template(
         "history.html",
@@ -230,7 +216,7 @@ def delete_chat(chat_id):
     if not login_required():
         return redirect(url_for("login"))
 
-    delete_chat_by_id(chat_id, user_id=session["user_id"], is_admin=is_admin())
+    database.delete_chat_by_id(chat_id, user_id=session["user_id"], is_admin=is_admin())
 
     if is_admin() and request.form.get("source") == "admin":
         return redirect(url_for("admin"))
@@ -243,7 +229,7 @@ def clear_history():
     if not login_required():
         return redirect(url_for("login"))
 
-    clear_user_chat_history(session["user_id"])
+    database.clear_user_chat_history(session["user_id"])
 
     return redirect(url_for("history"))
 
@@ -257,8 +243,8 @@ def admin():
         return render_template("access_denied.html")
 
     search_query = request.args.get("q", "").strip()
-    chats = get_all_chat_history(search_query)
-    stats = get_admin_stats()
+    chats = database.get_all_chat_history(search_query)
+    stats = database.get_admin_stats()
 
     return render_template(
         "admin.html",
@@ -276,7 +262,7 @@ def admin_clear_all():
     if not is_admin():
         return render_template("access_denied.html")
 
-    clear_all_chat_history()
+    database.clear_all_chat_history()
 
     return redirect(url_for("admin"))
 
@@ -286,9 +272,9 @@ def profile():
     if not login_required():
         return redirect(url_for("login"))
 
-    user, chat_count, tool_count, resume_count = get_user_profile(session["user_id"])
-    uploaded_resumes = get_user_uploaded_resumes(session["user_id"])
-    tool_results = get_user_tool_results(session["user_id"])[:10]
+    user, chat_count, tool_count, resume_count = database.get_user_profile(session["user_id"])
+    uploaded_resumes = database.get_user_uploaded_resumes(session["user_id"])
+    tool_results = database.get_user_tool_results(session["user_id"])[:10]
 
     return render_template(
         "profile.html",
@@ -303,6 +289,7 @@ def profile():
 
 
 @app.route("/resume-analyzer", methods=["GET", "POST"])
+@app.route("/resume", methods=["GET", "POST"])
 def resume_analyzer():
     if not login_required():
         return redirect(url_for("login"))
@@ -311,8 +298,8 @@ def resume_analyzer():
     extracted_text = None
     error = None
     result_id = None
-    history = get_user_tool_results(session["user_id"], "resume")[:8]
-    uploaded_resumes = get_user_uploaded_resumes(session["user_id"])
+    history = database.get_user_tool_results(session["user_id"], "resume")[:8]
+    uploaded_resumes = database.get_user_uploaded_resumes(session["user_id"])
 
     if request.method == "POST":
         resume_text = request.form.get("resume_text", "").strip()
@@ -325,14 +312,25 @@ def resume_analyzer():
                 file_path = os.path.join(app.config["UPLOAD_FOLDER"], saved_filename)
 
                 resume_file.save(file_path)
-                save_uploaded_resume(session["user_id"], original_filename, saved_filename, file_path)
+                database.save_uploaded_resume(
+                    session["user_id"],
+                    original_filename,
+                    saved_filename,
+                    file_path
+                )
 
                 extracted_text = extract_text_from_pdf(file_path)
 
                 if extracted_text and not extracted_text.startswith("PDF extraction error"):
                     result = get_ai_response(extracted_text, mode="resume")
                     score = extract_score_from_result(result)
-                    result_id = save_tool_result(session["user_id"], "resume", extracted_text, result, score)
+                    result_id = database.save_tool_result(
+                        session["user_id"],
+                        "resume",
+                        extracted_text,
+                        result,
+                        score
+                    )
                 else:
                     error = "Could not extract text from PDF. Try another PDF or paste resume text."
             else:
@@ -342,13 +340,24 @@ def resume_analyzer():
             extracted_text = resume_text
             result = get_ai_response(resume_text, mode="resume")
             score = extract_score_from_result(result)
-            result_id = save_tool_result(session["user_id"], "resume", resume_text, result, score)
+            result_id = database.save_tool_result(
+                session["user_id"],
+                "resume",
+                resume_text,
+                result,
+                score
+            )
 
         else:
             error = "Please upload a PDF resume or paste resume text."
 
+    template_name = "resume.html"
+
+    if not os.path.exists(os.path.join("templates", template_name)):
+        template_name = "resume_analyzer.html"
+
     return render_template(
-        "resume_analyzer.html",
+        template_name,
         result=result,
         extracted_text=extracted_text,
         error=error,
@@ -364,7 +373,7 @@ def delete_resume(resume_id):
     if not login_required():
         return redirect(url_for("login"))
 
-    resume = get_uploaded_resume_by_id(resume_id, session["user_id"])
+    resume = database.get_uploaded_resume_by_id(resume_id, session["user_id"])
 
     if resume:
         file_path = resume[3]
@@ -372,7 +381,7 @@ def delete_resume(resume_id):
         if os.path.exists(file_path):
             os.remove(file_path)
 
-        delete_uploaded_resume_by_id(resume_id, session["user_id"])
+        database.delete_uploaded_resume_by_id(resume_id, session["user_id"])
 
     return redirect(url_for("resume_analyzer"))
 
@@ -384,7 +393,7 @@ def roadmap():
 
     result = None
     result_id = None
-    history = get_user_tool_results(session["user_id"], "roadmap")[:8]
+    history = database.get_user_tool_results(session["user_id"], "roadmap")[:8]
 
     if request.method == "POST":
         goal = request.form.get("goal", "").strip()
@@ -394,7 +403,12 @@ def roadmap():
         if goal and duration and current_level:
             roadmap_input = f"Goal: {goal}\nDuration: {duration}\nCurrent level: {current_level}"
             result = get_ai_response(roadmap_input, mode="roadmap")
-            result_id = save_tool_result(session["user_id"], "roadmap", roadmap_input, result)
+            result_id = database.save_tool_result(
+                session["user_id"],
+                "roadmap",
+                roadmap_input,
+                result
+            )
 
     return render_template(
         "roadmap.html",
@@ -412,7 +426,7 @@ def interview():
 
     result = None
     result_id = None
-    history = get_user_tool_results(session["user_id"], "interview")[:8]
+    history = database.get_user_tool_results(session["user_id"], "interview")[:8]
 
     if request.method == "POST":
         role = request.form.get("role", "").strip()
@@ -421,7 +435,12 @@ def interview():
         if role and level:
             interview_input = f"Role: {role}\nLevel: {level}"
             result = get_ai_response(interview_input, mode="interview")
-            result_id = save_tool_result(session["user_id"], "interview", interview_input, result)
+            result_id = database.save_tool_result(
+                session["user_id"],
+                "interview",
+                interview_input,
+                result
+            )
 
     return render_template(
         "interview.html",
@@ -432,17 +451,69 @@ def interview():
     )
 
 
+@app.route("/projects", methods=["GET", "POST"])
+def projects():
+    if not login_required():
+        return redirect(url_for("login"))
+
+    project_result = None
+    selected_project = None
+
+    if request.method == "POST":
+        project_title = request.form.get("project_title", "").strip()
+        stack = request.form.get("stack", "").strip()
+
+        if not project_title:
+            project_title = "AI/ML portfolio project"
+
+        selected_project = project_title
+
+        prompt = f"""
+Create a complete portfolio project roadmap.
+
+Project Title: {project_title}
+Tech Stack: {stack}
+
+Give:
+1. Project overview
+2. Main features
+3. Required skills
+4. Step-by-step development plan
+5. Database design if needed
+6. Folder structure
+7. GitHub README content
+8. Resume project description
+9. Future upgrades
+
+Make it suitable for a B.Tech AI & ML student portfolio.
+"""
+
+        project_result = get_ai_response(prompt)
+
+    return render_template(
+        "projects.html",
+        project_result=project_result,
+        selected_project=selected_project,
+        user_name=session.get("user_name"),
+        is_admin=is_admin()
+    )
+
 @app.route("/download-result/<int:result_id>")
 def download_result(result_id):
     if not login_required():
         return redirect(url_for("login"))
 
-    result = get_tool_result_by_id(result_id, user_id=session["user_id"], is_admin=is_admin())
+    result = database.get_tool_result_by_id(
+        result_id,
+        user_id=session["user_id"],
+        is_admin=is_admin()
+    )
 
     if not result:
         return "Result not found.", 404
 
     filename = f"CareerMate_{result[1]}_result.txt"
+
     text_content = f"""
 CareerMate AI Result
 
@@ -456,7 +527,7 @@ Result:
 {result[3]}
 """
 
-    return Response(
+    return app.response_class(
         text_content,
         mimetype="text/plain",
         headers={"Content-Disposition": f"attachment;filename={filename}"}
@@ -465,11 +536,13 @@ Result:
 
 @app.errorhandler(404)
 def page_not_found(error):
+    print(error)
     return render_template("access_denied.html"), 404
 
 
 @app.errorhandler(500)
 def server_error(error):
+    print(error)
     return "Server error. Please check Flask terminal.", 500
 
 

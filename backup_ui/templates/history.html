@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>History | CareerMate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <h2>CareerMate AI</h2>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('chat') }}">AI Chat</a>
+        <a href="{{ url_for('resume_analyzer') }}">Resume Analyzer</a>
+        <a href="{{ url_for('roadmap') }}">Roadmap</a>
+        <a href="{{ url_for('interview') }}">Interview</a>
+        <a href="{{ url_for('history') }}">History</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        {% if is_admin %}
+        <a href="{{ url_for('admin') }}">Admin</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <main class="main-content">
+        <section class="panel">
+            <div class="result-actions">
+                <h1>My Chat History</h1>
+                <form method="POST" action="{{ url_for('clear_history') }}">
+                    <button class="danger-btn" type="submit">Clear History</button>
+                </form>
+            </div>
+
+            <form method="GET" class="search-form">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Search chat history...">
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        {% if chats %}
+            {% for chat in chats %}
+            <section class="panel">
+                <p><strong>You:</strong> {{ chat[1] }}</p>
+                <p><strong>CareerMate AI:</strong> {{ chat[2] }}</p>
+                <small>{{ chat[3] }}</small>
+
+                <form method="POST" action="{{ url_for('delete_chat', chat_id=chat[0]) }}">
+                    <button class="danger-small" type="submit">Delete</button>
+                </form>
+            </section>
+            {% endfor %}
+        {% else %}
+            <section class="panel">
+                <p class="muted">No chat history found.</p>
+            </section>
+        {% endif %}
+    </main>
+
+</div>
+
+</body>
+</html>
+

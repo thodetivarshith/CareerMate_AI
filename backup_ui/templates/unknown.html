@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Unknown Questions - CareerMate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <div class="top-bar">
+            <div>
+                <h1>Unknown Questions</h1>
+                <p>Questions not found in fixed answers and sent to Gemini AI.</p>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="/">Home</a>
+                <a href="/admin">Admin</a>
+                <a href="/history">Chat History</a>
+                <button onclick="clearUnknown()">Clear Unknown</button>
+            </div>
+        </div>
+
+        <div class="card-list">
+            {% for q in questions %}
+            <div class="data-card">
+                <h3>Unknown Question</h3>
+                <p>{{ q[1] }}</p>
+                <span>{{ q[2] }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function clearUnknown() {
+            if (!confirm("Are you sure you want to clear unknown questions?")) {
+                return;
+            }
+
+            fetch("/clear-unknown", {
+                method: "POST"
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.response);
+                location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
+

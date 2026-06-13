@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Profile | CareerMate AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <h2>CareerMate AI</h2>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('chat') }}">AI Chat</a>
+        <a href="{{ url_for('resume_analyzer') }}">Resume Analyzer</a>
+        <a href="{{ url_for('roadmap') }}">Roadmap</a>
+        <a href="{{ url_for('interview') }}">Interview</a>
+        <a href="{{ url_for('history') }}">History</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        {% if is_admin %}
+        <a href="{{ url_for('admin') }}">Admin</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <main class="main-content">
+        <section class="hero-card">
+            <div class="profile-avatar">{{ user[1][0].upper() }}</div>
+            <div>
+                <h1>{{ user[1] }}</h1>
+                <p>{{ user[2] }}</p>
+                <p class="muted">Joined: {{ user[3][:10] }}</p>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card"><h2>{{ chat_count }}</h2><p>Total Chats</p></div>
+            <div class="stat-card"><h2>{{ tool_count }}</h2><p>AI Results</p></div>
+            <div class="stat-card"><h2>{{ resume_count }}</h2><p>Uploaded Resumes</p></div>
+            <div class="stat-card"><h2>Pro</h2><p>Status</p></div>
+        </section>
+
+        <section class="panel">
+            <h2>Recent Tool Results</h2>
+            {% if tool_results %}
+                {% for item in tool_results %}
+                <div class="mini-item">
+                    <p><strong>{{ item[1].title() }}</strong> - {{ item[5] }}</p>
+                    <a class="small-btn" href="{{ url_for('download_result', result_id=item[0]) }}">Download</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="muted">No tool results yet.</p>
+            {% endif %}
+        </section>
+    </main>
+
+</div>
+
+</body>
+</html>
+

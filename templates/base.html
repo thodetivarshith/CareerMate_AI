@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title or 'CareerMate AI' }}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode:'class', theme:{ extend:{ colors:{ primary:'#00d1ff', primarySoft:'#a4e6ff', surface:'#111318', panel:'#1a1c20', card:'#1e2024', muted:'#bbc9cf', tertiary:'#00f9be', violet:'#dcb8ff', danger:'#ffb4ab' }, fontFamily:{ sans:['Inter','sans-serif'] } } } }
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='premium-ui.css') }}">
+</head>
+<body class="min-h-screen bg-[#050505] text-[#e2e2e8] font-sans overflow-x-hidden">
+  <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_10%,rgba(0,209,255,.18),transparent_32%),radial-gradient(circle_at_90%_20%,rgba(220,184,255,.12),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(0,249,190,.09),transparent_35%)]"></div>
+  {% block public %}{% endblock %}
+  {% if sidebar is not defined or sidebar %}
+  <div class="relative z-10 flex min-h-screen">
+    <aside id="sidebar" class="fixed md:sticky top-0 left-0 z-40 h-screen w-72 -translate-x-full md:translate-x-0 transition-transform glass-panel border-r border-white/10 flex flex-col">
+      <div class="p-6 border-b border-white/10">
+        <a href="/dashboard" class="flex items-center gap-3">
+          <div class="h-11 w-11 rounded-2xl primary-gradient grid place-items-center shadow-cyan"><span class="material-symbols-outlined text-black">psychology</span></div>
+          <div><h1 class="text-xl font-black tracking-tight">CareerMate AI</h1><p class="text-xs text-muted">Premium mentor console</p></div>
+        </a>
+      </div>
+      <nav class="p-4 space-y-2 flex-1 overflow-y-auto custom-scroll">
+        {% set active = active or '' %}
+        {% set items = [
+          ('dashboard','/dashboard','dashboard','Dashboard'),
+          ('chat','/chat','forum','AI Chatbot'),
+          ('resume','/resume','description','Resume Analyzer'),
+          ('roadmap','/roadmap','route','Skill Roadmap'),
+          ('interview','/interview','record_voice_over','Interview Practice'),
+          ('projects','/projects','emoji_objects','Project Ideas'),
+          ('history','/history','history','History'),
+          ('profile','/profile','person','Profile'),
+          ('admin','/admin','admin_panel_settings','Admin')
+        ] %}
+        {% for key, href, icon, label in items %}
+        <a href="{{ href }}" class="nav-link {{ 'active' if active==key else '' }}"><span class="material-symbols-outlined">{{ icon }}</span><span>{{ label }}</span></a>
+        {% endfor %}
+      </nav>
+      <div class="p-4 border-t border-white/10"><a href="/logout" class="nav-link text-danger"><span class="material-symbols-outlined">logout</span><span>Logout</span></a></div>
+    </aside>
+    <main class="flex-1 md:ml-0 w-full">
+      <header class="sticky top-0 z-30 h-20 glass-panel border-b border-white/10 flex items-center justify-between px-4 md:px-8">
+        <div class="flex items-center gap-4">
+          <button onclick="toggleSidebar()" class="md:hidden icon-btn"><span class="material-symbols-outlined">menu</span></button>
+          <div>
+            <p class="text-xs uppercase tracking-[.25em] text-primary font-bold">{{ eyebrow or 'Career Console' }}</p>
+            <h2 class="text-xl md:text-2xl font-black">{{ page_title or 'Dashboard' }}</h2>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center gap-3 glass-input rounded-full px-4 py-2 w-80"><span class="material-symbols-outlined text-muted text-lg">search</span><input class="bg-transparent border-none focus:ring-0 p-0 w-full text-sm" placeholder="Search career tools..."></div>
+      </header>
+      <section class="p-4 md:p-8 max-w-7xl mx-auto">{% block content %}{% endblock %}</section>
+    </main>
+  </div>
+  {% endif %}
+  <script src="{{ url_for('static', filename='premium-ui.js') }}"></script>
+</body>
+</html>
